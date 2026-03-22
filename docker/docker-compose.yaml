@@ -1,0 +1,28 @@
+services:
+  database:
+    container_name: farm-local-database
+    image: postgres:18
+    restart: unless-stopped
+    networks:
+      - farm_local_internals_network
+    env_file:
+      - ./.env.local
+    volumes:
+      - ./init/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - farm-local-database-volume:/farm/data
+    ports:
+      - "15435:5432"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1M"
+        max-file: "10"
+
+volumes:
+  farm-local-database-volume:
+    driver: local
+
+networks:
+  farm_local_internals_network:
+    name: farm_local_internals_network
+    driver: bridge
