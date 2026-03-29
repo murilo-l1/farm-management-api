@@ -31,9 +31,13 @@ CREATE TABLE farm_user
     phone      text        NOT NULL,
     email      text UNIQUE NOT NULL CHECK (email <> ''),
     password   text        NOT NULL CHECK (length(password) >= 8),
+    active     boolean     NOT NULL DEFAULT TRUE,
     created_at timestamp,
     updated_at timestamp
 );
+
+INSERT INTO farm_user (name, phone, email, password, created_at, updated_at)
+VALUES ('admin', '35991179667', 'admin@email.com', '$2a$12$YBOWEel6M/lO2SiPIs5zAO6KWOT3db5s4puX1ZbeCD5q90/8kGaIS', now(), now());
 
 CREATE TABLE category
 (

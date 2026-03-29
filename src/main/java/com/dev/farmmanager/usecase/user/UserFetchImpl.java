@@ -2,9 +2,11 @@ package com.dev.farmmanager.usecase.user;
 
 import com.dev.farmmanager.domain.dto.user.FetchUserDto;
 import com.dev.farmmanager.domain.entity.User;
-import com.dev.farmmanager.domain.payload.user.FetchUserPayload;
+import com.dev.farmmanager.exception.handler.UserNotFoundException;
 import com.dev.farmmanager.mapper.UserMapper;
+import com.dev.farmmanager.security.SecurityUtils;
 import com.dev.farmmanager.service.user.UserService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,8 +21,16 @@ public class UserFetchImpl implements UserFetch {
     private final UserMapper mapper;
 
     @Override
-    public ResponseEntity<FetchUserDto> getById(final Integer userId) {
-        User user = service.getById(userId).orElseThrow( () -> new RuntimeException("foo")); // melhorar sistema de throw + baseController, que automatize isso
+    public ResponseEntity<FetchUserDto> getCurrentUser() {
+        Integer userId = SecurityUtils.getCurrentUserId();
+        User user = service.getById(userId).orElseThrow(UserNotFoundException::new);
+
+        return ResponseEntity.ok(mapper.toDto(user));
+    }
+
+    @Override
+    public ResponseEntity<FetchUserDto> getById(final @NonNull Integer userId) {
+        User user = service.getById(userId).orElseThrow(UserNotFoundException::new);
 
         FetchUserDto dto = mapper.toDto(user);
 

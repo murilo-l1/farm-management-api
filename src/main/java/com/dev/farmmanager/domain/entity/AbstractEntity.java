@@ -17,6 +17,7 @@ import java.util.Objects;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
+@Setter
 @NoArgsConstructor
 public abstract class AbstractEntity implements Serializable {
 

@@ -1,12 +1,14 @@
 package com.dev.farmmanager.config;
 
-import io.netty.handler.codec.http.HttpMethod;
+import com.dev.farmmanager.security.JwtAuthenticationFilter;
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.MultipartConfigElement;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -17,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.util.unit.DataSize;
@@ -31,17 +34,21 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    public static final String[] WHITELIST_PATTERNS = {
-            // rotas de login e registro
+    @Value("${farm.cors.origins}")
+    private String allowedOrigins;
+
+    private static final String[] WHITELIST_PATTERNS = {
+            "/api/auth/**"
+            // endpoints de documentation swagger
     };
 
-    static final String COMPANY_API_PATTERN = "/api/user/**";
+    private static final String FARM_API_PATTERN = "/api/farm/**";
 
-    //private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-//    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-//        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-//    }
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfigurer() {
@@ -60,24 +67,32 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                            .anyRequest().permitAll()
-                        // .anyRequest().authenticated() -> quando implementar login, jwt e google auth
-                );
+        http.cors(configure -> configure.configurationSource(this.corsConfigurationSource())).
+                headers(h -> h.contentSecurityPolicy(policy -> policy.policyDirectives("script-src 'self'"))
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                        .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
+                        .httpStrictTransportSecurity(hsts -> hsts.includeSubDomains(true).preload(true).maxAgeInSeconds(31536000))
+                        .referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN)))
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(request -> request
+                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                        .requestMatchers(WHITELIST_PATTERNS).permitAll()
+                        .requestMatchers(FARM_API_PATTERN).hasRole("USER")
+                        .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
+                        .anyRequest().hasRole("ADMIN")
+                ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration(PATTERN, createCorsConfig(allowedOrigins));
-//
-//          return source;
-//    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", createCorsConfig(allowedOrigins));
+
+        return source;
+    }
 
     private CorsConfiguration createCorsConfig(String allowedOrigins) {
         CorsConfiguration configuration = new CorsConfiguration();

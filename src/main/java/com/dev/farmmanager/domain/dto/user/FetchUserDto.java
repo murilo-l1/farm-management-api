@@ -8,5 +8,6 @@ public record FetchUserDto(
         @NotNull Integer id,
         @NotBlank String name,
         @Email @NotBlank String email,
-        @NotBlank String phone
+        @NotBlank String phone,
+        @NotNull Boolean active
 ) {}
