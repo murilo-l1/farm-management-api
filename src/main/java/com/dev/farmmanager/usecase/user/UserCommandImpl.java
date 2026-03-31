@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
 @Service("UserUpdate")
-public class UserUpdateImpl implements UserUpdate {
+public class UserCommandImpl implements UserCommand {
 
     private final UserService service;
 
-    public UserUpdateImpl(UserService service, UserMapper mapper) {
+    public UserCommandImpl(UserService service, UserMapper mapper) {
         this.service = service;
     }
 

@@ -2,10 +2,9 @@ package com.dev.farmmanager.controller;
 
 import com.dev.farmmanager.controller.base.BaseController;
 import com.dev.farmmanager.domain.dto.user.FetchUserDto;
-import com.dev.farmmanager.domain.payload.user.DeactivateUserPayload;
 import com.dev.farmmanager.domain.payload.user.UpdateUserPayload;
 import com.dev.farmmanager.usecase.user.UserFetch;
-import com.dev.farmmanager.usecase.user.UserUpdate;
+import com.dev.farmmanager.usecase.user.UserCommand;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController extends BaseController {
 
     private final UserFetch fetch;
-    private final UserUpdate update;
+    private final UserCommand update;
 
 //    @GetMapping
 //    public ResponseEntity<FetchUserDto> getById(@NonNull @PathVariable final Integer userId) {

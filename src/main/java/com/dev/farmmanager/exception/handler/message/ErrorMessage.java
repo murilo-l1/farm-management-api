@@ -12,7 +12,7 @@ public final class ErrorMessage {
     
     // Payload Validation messages
     public static final String REQUIRED_NAME = "O nome é obrigatório";
-    public static final String INVALID_NAME_LENGTH = "O nome deve ter entre 5 e 100 caracteres";
+    public static final String INVALID_NAME_LENGTH = "Tamanho de nome inválido";
     public static final String REQUIRED_EMAIL = "O email é obrigatório";
     public static final String INVALID_EMAIL = "Email inválido";
     public static final String REQUIRED_PASSWORD = "A senha é obrigatória";
@@ -20,5 +20,6 @@ public final class ErrorMessage {
     public static final String REQUIRED_PHONE = "O telefone é obrigatório";
     public static final String INVALID_PHONE_LENGTH = "O telefone deve ter entre 10 e 11 caracteres";
 
-
+    // Category
+    public static final String CATEGORY_NOT_FOUND = "Categoria não encontrada";
 }

@@ -3,7 +3,11 @@ package com.dev.farmmanager.domain.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = Category.TABLE_NAME)
 public class Category extends AbstractEntity {
