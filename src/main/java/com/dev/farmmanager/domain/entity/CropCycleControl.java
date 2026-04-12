@@ -1,12 +1,18 @@
 package com.dev.farmmanager.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
 @Table(name = CropCycleControl.TABLE_NAME)
+@Getter
+@Setter
+@NoArgsConstructor
 public class CropCycleControl {
 
     protected static final String TABLE_NAME = "crop_cycle_control";

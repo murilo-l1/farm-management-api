@@ -3,9 +3,15 @@ package com.dev.farmmanager.domain.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = Item.TABLE_NAME)
+@Getter
+@Setter
+@NoArgsConstructor
 public class Item extends AbstractEntity {
 
     protected static final String TABLE_NAME = "item";

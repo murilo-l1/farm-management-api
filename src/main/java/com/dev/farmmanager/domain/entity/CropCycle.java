@@ -1,10 +1,13 @@
 package com.dev.farmmanager.domain.entity;
 
 import com.dev.farmmanager.domain.enumeration.CropCycleStatus;
+import com.dev.farmmanager.domain.enumeration.MeasurementUnit;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.JdbcType;
 
 import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
@@ -15,6 +18,8 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = CropCycle.TABLE_NAME)
+@Setter
+@Getter
 public class CropCycle extends AbstractEntity {
 
     protected static final String TABLE_NAME = "crop_cycle";
@@ -26,6 +31,9 @@ public class CropCycle extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToOne(mappedBy = "cropCycle")
+    private CropCycleControl control;
 
     @NotBlank
     @Size(max = 255)
@@ -40,9 +48,8 @@ public class CropCycle extends AbstractEntity {
     @Column(name = "planted_area", precision = 10, scale = 2)
     private BigDecimal plantedArea;
 
-    @Size(max = 10)
-    @Column(name = "measurement_unit", length = 10)
-    private String measurementUnit;
+    @Column(name = "measurement_unit", length = 15)
+    private MeasurementUnit measurementUnit;
 
     @Column(name = "plant_count")
     private Integer plantCount;
