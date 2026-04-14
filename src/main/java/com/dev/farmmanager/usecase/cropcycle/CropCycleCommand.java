@@ -8,7 +8,7 @@ public interface CropCycleCommand {
 
     ResponseEntity<CropCycleDto> create(CropCyclePayload payload);
 
-    ResponseEntity<Void> update(Integer id, CropCyclePayload payload);
+    ResponseEntity<CropCycleDto> update(Integer id, CropCyclePayload payload);
 
     ResponseEntity<Void> delete(Integer id);
 }

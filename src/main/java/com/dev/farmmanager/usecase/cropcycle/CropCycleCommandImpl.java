@@ -24,9 +24,9 @@ public class CropCycleCommandImpl implements CropCycleCommand {
     }
 
     @Override
-    public ResponseEntity<Void> update(Integer id, CropCyclePayload payload) {
-        service.update(id, payload);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<CropCycleDto> update(Integer id, CropCyclePayload payload) {
+        CropCycle cropCycle = service.update(id, payload);
+        return ResponseEntity.ok(mapper.toDto(cropCycle));
     }
 
     @Override

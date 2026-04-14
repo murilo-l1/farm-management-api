@@ -37,8 +37,8 @@ public class ItemController extends BaseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable Integer id,
-                                       @Valid @RequestBody ItemPayload payload) {
+    public ResponseEntity<ItemDto> update(@PathVariable Integer id,
+                                          @Valid @RequestBody ItemPayload payload) {
         return command.update(id, payload);
     }
 

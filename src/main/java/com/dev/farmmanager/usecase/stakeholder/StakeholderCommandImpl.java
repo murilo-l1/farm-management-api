@@ -27,10 +27,9 @@ public class StakeholderCommandImpl implements StakeholderCommand {
     }
 
     @Override
-    public ResponseEntity<Void> update(@NonNull final Integer id, @NonNull final StakeholderPayload payload) {
-        service.update(id, payload);
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<StakeholderDto> update(@NonNull final Integer id, @NonNull final StakeholderPayload payload) {
+        Stakeholder stakeholder = service.update(id, payload);
+        return ResponseEntity.ok(mapper.toDto(stakeholder));
     }
 
     @Override

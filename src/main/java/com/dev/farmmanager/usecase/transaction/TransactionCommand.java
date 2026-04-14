@@ -8,7 +8,7 @@ public interface TransactionCommand {
 
     ResponseEntity<TransactionDto> create(TransactionPayload payload);
 
-    ResponseEntity<Void> update(Integer id, TransactionPayload payload);
+    ResponseEntity<TransactionDto> update(Integer id, TransactionPayload payload);
 
     ResponseEntity<Void> delete(Integer id);
 }

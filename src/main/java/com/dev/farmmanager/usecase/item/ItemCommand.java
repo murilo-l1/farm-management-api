@@ -9,7 +9,7 @@ public interface ItemCommand {
 
     ResponseEntity<ItemDto> create(@NonNull ItemPayload payload);
 
-    ResponseEntity<Void> update(@NonNull Integer id, @NonNull ItemPayload payload);
+    ResponseEntity<ItemDto> update(@NonNull Integer id, @NonNull ItemPayload payload);
 
     ResponseEntity<Void> delete(@NonNull Integer id);
 }

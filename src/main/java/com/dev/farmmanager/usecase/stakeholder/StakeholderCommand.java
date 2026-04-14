@@ -9,7 +9,7 @@ public interface StakeholderCommand {
 
     ResponseEntity<StakeholderDto> create(@NonNull StakeholderPayload payload);
 
-    ResponseEntity<Void> update(@NonNull Integer id, @NonNull StakeholderPayload payload);
+    ResponseEntity<StakeholderDto> update(@NonNull Integer id, @NonNull StakeholderPayload payload);
 
     ResponseEntity<Void> delete(@NonNull Integer id);
 }

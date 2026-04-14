@@ -9,7 +9,7 @@ public interface CategoryCommand {
 
     ResponseEntity<CategoryDto> create(@NonNull final CategoryPayload payload);
 
-    ResponseEntity<Void> update(@NonNull final Integer id, @NonNull final CategoryPayload payload);
+    ResponseEntity<CategoryDto> update(@NonNull final Integer id, @NonNull final CategoryPayload payload);
 
     ResponseEntity<Void> delete(@NonNull final Integer id);
 

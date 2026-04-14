@@ -27,10 +27,9 @@ public class CategoryCommandImpl implements CategoryCommand {
     }
 
     @Override
-    public ResponseEntity<Void> update(@NonNull final Integer id, @NonNull final CategoryPayload payload) {
-        service.update(id, payload);
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<CategoryDto> update(@NonNull final Integer id, @NonNull final CategoryPayload payload) {
+        Category category = service.update(id, payload);
+        return ResponseEntity.ok(mapper.toDto(category));
     }
 
     @Override

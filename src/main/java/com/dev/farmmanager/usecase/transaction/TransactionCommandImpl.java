@@ -32,9 +32,12 @@ public class TransactionCommandImpl implements TransactionCommand {
     }
 
     @Override
-    public ResponseEntity<Void> update(Integer id, TransactionPayload payload) {
-        service.update(id, payload);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<TransactionDto> update(Integer id, TransactionPayload payload) {
+        Transaction updated = service.update(id, payload);
+        if (payload.items() != null && updated.getItems().isEmpty()) {
+            updated.setItems(transactionItemService.findByTransactionId(updated.getId()));
+        }
+        return ResponseEntity.ok(mapper.toDto(updated));
     }
 
     @Override

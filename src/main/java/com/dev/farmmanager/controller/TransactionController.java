@@ -42,7 +42,7 @@ public class TransactionController extends BaseController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a transaction by ID")
-    public ResponseEntity<Void> update(@PathVariable @NotNull Integer id, @Valid @RequestBody TransactionPayload payload) {
+    public ResponseEntity<TransactionDto> update(@PathVariable @NotNull Integer id, @Valid @RequestBody TransactionPayload payload) {
         return command.update(id, payload);
     }
 

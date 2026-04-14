@@ -42,7 +42,7 @@ public class CropCycleController extends BaseController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a crop cycle by ID")
-    public ResponseEntity<Void> update(@PathVariable @NotNull Integer id, @Valid @RequestBody CropCyclePayload payload) {
+    public ResponseEntity<CropCycleDto> update(@PathVariable @NotNull Integer id, @Valid @RequestBody CropCyclePayload payload) {
         return command.update(id, payload);
     }
 

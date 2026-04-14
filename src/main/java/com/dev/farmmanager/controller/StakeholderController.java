@@ -37,8 +37,8 @@ public class StakeholderController extends BaseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable Integer id,
-                                       @Valid @RequestBody StakeholderPayload payload) {
+    public ResponseEntity<StakeholderDto> update(@PathVariable Integer id,
+                                                 @Valid @RequestBody StakeholderPayload payload) {
         return command.update(id, payload);
     }
 

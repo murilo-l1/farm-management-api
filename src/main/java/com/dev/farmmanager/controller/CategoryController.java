@@ -46,7 +46,7 @@ public class CategoryController extends BaseController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a category by ID")
-    public ResponseEntity<Void> update(@PathVariable Integer id, @Valid @RequestBody CategoryPayload payload) {
+    public ResponseEntity<CategoryDto> update(@PathVariable Integer id, @Valid @RequestBody CategoryPayload payload) {
         return command.update(id, payload);
     }
 

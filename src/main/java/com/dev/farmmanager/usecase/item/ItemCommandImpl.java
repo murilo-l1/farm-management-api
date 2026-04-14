@@ -27,10 +27,9 @@ public class ItemCommandImpl implements ItemCommand {
     }
 
     @Override
-    public ResponseEntity<Void> update(@NonNull final Integer id, @NonNull final ItemPayload payload) {
-        service.update(id, payload);
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ItemDto> update(@NonNull final Integer id, @NonNull final ItemPayload payload) {
+        Item item = service.update(id, payload);
+        return ResponseEntity.ok(mapper.toDto(item));
     }
 
     @Override
