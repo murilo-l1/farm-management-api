@@ -38,6 +38,19 @@ public final class ErrorMessage {
     public static final String REQUIRED_START_DATE = "A data de início é obrigatória";
     public static final String INVALID_MEASUREMENT_UNIT_PAIR = "Se a unidade é pés, o número de plantas deve ser informado";
 
+    // Transaction
+    public static final String TRANSACTION_NOT_FOUND = "Transação não encontrada";
+    public static final String REQUIRED_TYPE = "O tipo de transação é obrigatório";
+    public static final String REQUIRED_TOTAL_VALUE = "O valor total é obrigatório";
+    public static final String REQUIRED_TRANSACTION_DATE = "A data da transação é obrigatória";
+    public static final String TOTAL_VALUE_INVALID_PAIR = "O valor total da transação deve ser informado ou será calculado pelos itens adicionados";
+    public static final String TOTAL_VALUE_REQUIRED = "O valor da transação é obrigatório";
+
+    //TransactionItem
+    public static final String ITEM_ID_REQUIRED = "Id do item é obrigatório";
+    public static final String QUANTITY_REQUIRED = "A quantidade é obrigatória";
+    public static final String UNIT_PRICE_REQUIRED = "O preço unitário é obrigatório";
+
     // Stakeholder
     public static final String STAKEHOLDER_NOT_FOUND = "Fornecedor/comprador não encontrado";
     public static final String INVALID_CPF = "CPF inválido";

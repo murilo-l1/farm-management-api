@@ -18,6 +18,14 @@ CREATE TYPE transaction_status AS ENUM (
     'CANCELLED'
     );
 
+CREATE TYPE payment_method AS ENUM (
+    'CARD',
+    'CASH',
+    'PIX',
+    'CHECK',
+    'BOLETO'
+);
+
 CREATE TYPE stakeholder_type AS ENUM (
     'SUPPLIER',
     'BUYER',
@@ -119,7 +127,8 @@ CREATE TABLE transaction
     description      text,
     total_value      numeric(15, 2),
     transaction_date date,
-    status           transaction_status,
+    status           transaction_status NOT NULL DEFAULT 'PENDING'::transaction_status,
+    payment_method   payment_method NULL,
     created_at       timestamp,
     updated_at       timestamp,
 

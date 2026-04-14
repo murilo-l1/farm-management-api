@@ -2,11 +2,17 @@ package com.dev.farmmanager.domain.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = TransactionItem.TABLE_NAME)
+@Getter
+@Setter
+@NoArgsConstructor
 public class TransactionItem {
 
     protected static final String TABLE_NAME = "transaction_item";

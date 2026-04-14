@@ -32,6 +32,7 @@ import java.util.OptionalDouble;
 
 @Service("CropCycleService")
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CropCycleServiceImpl implements CropCycleService {
 
     private final CropCycleRepository repository;
@@ -95,7 +96,7 @@ public class CropCycleServiceImpl implements CropCycleService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public CropCycle create(@NonNull final Integer userId, @NonNull final CropCyclePayload payload) {
         if (payload.measurementUnit() == MeasurementUnit.PES && payload.plantCount() == null) {
             throw new InvalidMeasurementUnitPairException();
@@ -103,7 +104,7 @@ public class CropCycleServiceImpl implements CropCycleService {
         if (payload.measurementUnit() != MeasurementUnit.PES && payload.plantCount() != null) {
             throw new InvalidMeasurementUnitPairException();
         }
-        
+
         User user = userService.getById(userId).orElseThrow(UserNotFoundException::new);
 
         CropCycle cropCycle = mapper.toEntity(payload);
@@ -122,8 +123,15 @@ public class CropCycleServiceImpl implements CropCycleService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public CropCycle update(@NonNull final Integer id, @NonNull final CropCyclePayload payload) {
+        if (payload.measurementUnit() == MeasurementUnit.PES && payload.plantCount() == null) {
+            throw new InvalidMeasurementUnitPairException();
+        }
+        if (payload.measurementUnit() != MeasurementUnit.PES && payload.plantCount() != null) {
+            throw new InvalidMeasurementUnitPairException();
+        }
+
         CropCycle cropCycle = repository.findByIdAndUserId(id, SecurityUtils.getCurrentUserId())
                 .orElseThrow(CropCycleNotFoundException::new);
 
@@ -142,7 +150,7 @@ public class CropCycleServiceImpl implements CropCycleService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Integer id) {
         CropCycle cropCycle = repository.findByIdAndUserId(id, SecurityUtils.getCurrentUserId())
                 .orElseThrow(CropCycleNotFoundException::new);

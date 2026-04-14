@@ -1,10 +1,13 @@
 package com.dev.farmmanager.domain.entity;
 
+import com.dev.farmmanager.domain.enumeration.PaymentMethod;
 import com.dev.farmmanager.domain.enumeration.TransactionStatus;
 import com.dev.farmmanager.domain.enumeration.TransactionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.JdbcType;
 
 import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
@@ -12,9 +15,13 @@ import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = Transaction.TABLE_NAME)
+@Getter
+@Setter
 public class Transaction extends AbstractEntity {
 
     protected static final String TABLE_NAME = "transaction";
@@ -66,6 +73,14 @@ public class Transaction extends AbstractEntity {
     @Enumerated(value = EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "status", columnDefinition = "transaction_status")
-    private TransactionStatus status;
+    private TransactionStatus status = TransactionStatus.PENDING;
+
+    @Enumerated(value = EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(name = "payment_method", columnDefinition = "payment_method")
+    private PaymentMethod paymentMethod;
+
+    @OneToMany(mappedBy = "transaction", fetch = FetchType.LAZY)
+    private List<TransactionItem> items = new ArrayList<>();
 
 }
