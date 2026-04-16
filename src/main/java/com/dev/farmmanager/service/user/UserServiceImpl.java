@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service("UserService")
+@Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;

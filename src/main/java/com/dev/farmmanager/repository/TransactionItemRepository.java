@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository("TransactionItemRepository")
+@Repository
 public interface TransactionItemRepository extends JpaRepository<TransactionItem, Integer>, JpaSpecificationExecutor<TransactionItem> {
 
     @EntityGraph(attributePaths = {"item"})

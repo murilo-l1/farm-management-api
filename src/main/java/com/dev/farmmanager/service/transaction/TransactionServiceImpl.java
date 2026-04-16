@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-@Service("TransactionService")
+@Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class TransactionServiceImpl implements TransactionService {

@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Service("TransactionItemService")
+@Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class TransactionItemServiceImpl implements TransactionItemService {

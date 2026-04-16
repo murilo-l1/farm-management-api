@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service("StakeholderService")
+@Service
 @RequiredArgsConstructor
 public class StakeholderServiceImpl implements StakeholderService {
 

@@ -30,7 +30,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
-@Service("CropCycleService")
+@Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CropCycleServiceImpl implements CropCycleService {
