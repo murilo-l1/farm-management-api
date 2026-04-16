@@ -15,6 +15,7 @@ import com.dev.farmmanager.exception.handler.*;
 import com.dev.farmmanager.repository.TransactionRepository;
 import com.dev.farmmanager.security.SecurityUtils;
 import com.dev.farmmanager.service.category.CategoryService;
+import com.dev.farmmanager.service.cropcycle.CropCycleControlService;
 import com.dev.farmmanager.service.cropcycle.CropCycleService;
 import com.dev.farmmanager.service.stakeholder.StakeholderService;
 import com.dev.farmmanager.service.user.UserService;
@@ -24,8 +25,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +37,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository repository;
     private final TransactionItemService transactionItemService;
+    private final CropCycleControlService cropCycleControlService;
     private final UserService userService;
     private final CropCycleService cropCycleService;
     private final CategoryService categoryService;
@@ -55,6 +59,16 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Optional<Transaction> getById(@NonNull final Integer id) {
         return repository.findByIdAndUserId(id, SecurityUtils.getCurrentUserId());
+    }
+
+    @Override
+    public List<Transaction> findExpensesByCropCycleId(Integer cropCycleId) {
+        return repository.findByCropCycleIdAndType(cropCycleId, TransactionType.EXPENSE);
+    }
+
+    @Override
+    public List<Transaction> findIncomesByCropCycleId(Integer cropCycleId) {
+        return repository.findByCropCycleIdAndType(cropCycleId, TransactionType.INCOME);
     }
 
     @Override
@@ -81,6 +95,10 @@ public class TransactionServiceImpl implements TransactionService {
             transactionItemService.createItems(saved, payload.items());
         }
 
+        if (saved.getCropCycleId() != null) {
+            cropCycleControlService.recalculate(saved.getCropCycleId());
+        }
+
         return saved;
     }
 
@@ -91,6 +109,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         Transaction transaction = repository.findByIdAndUserId(id, SecurityUtils.getCurrentUserId())
                 .orElseThrow(TransactionNotFoundException::new);
+
+        Integer oldCropCycleId = transaction.getCropCycleId();
 
         transaction.setType(payload.type());
         transaction.setDescription(payload.description());
@@ -103,6 +123,12 @@ public class TransactionServiceImpl implements TransactionService {
 
         Transaction saved = repository.save(transaction);
         transactionItemService.replaceItems(saved, payload.items());
+
+        Set<Integer> toRecalculate = new HashSet<>();
+        if (oldCropCycleId != null) toRecalculate.add(oldCropCycleId);
+        if (payload.cropCycleId() != null) toRecalculate.add(payload.cropCycleId());
+        toRecalculate.forEach(cropCycleControlService::recalculate);
+
         return saved;
     }
 
@@ -111,7 +137,11 @@ public class TransactionServiceImpl implements TransactionService {
     public void delete(@NonNull final Integer id) {
         Transaction transaction = repository.findByIdAndUserId(id, SecurityUtils.getCurrentUserId())
                 .orElseThrow(TransactionNotFoundException::new);
+        Integer cropCycleId = transaction.getCropCycleId();
         repository.delete(transaction);
+        if (cropCycleId != null) {
+            cropCycleControlService.recalculate(cropCycleId);
+        }
     }
 
     private boolean hasItems(TransactionPayload payload) {

@@ -46,7 +46,7 @@ public class CropCycleServiceImpl implements CropCycleService {
         List<CropCycleRowDto> rows = repository.findAllRowsByUserId(userId);
 
         long activeCyclesCount = rows.stream()
-                .filter(r -> CropCycleStatus.ACTIVE == r.status())
+                .filter(r -> CropCycleStatus.ACTIVE == r.status() || CropCycleStatus.PLANTING == r.status() || CropCycleStatus.HARVESTING == r.status())
                 .count();
 
         BigDecimal totalPlantedArea = rows.stream()
@@ -111,10 +111,6 @@ public class CropCycleServiceImpl implements CropCycleService {
         cropCycle.setUser(user);
         CropCycle saved = repository.save(cropCycle);
 
-        // TODO: CropCycleControl será recalculado automaticamente ao registrar Transactions.
-        //       Quando o TransactionService criar/alterar/deletar uma Transaction vinculada a este ciclo,
-        //       deverá chamar CropCycleControlService.recalculate(cropCycleId), que somará EXPENSE →
-        //       currentInvestment, INCOME → currentRevenue e recalculará currentRoi e progressPercentage.
         CropCycleControl control = new CropCycleControl();
         control.setCropCycle(saved);
         controlRepository.save(control);

@@ -4,6 +4,7 @@ import com.dev.farmmanager.domain.enumeration.PaymentMethod;
 import com.dev.farmmanager.domain.enumeration.TransactionStatus;
 import com.dev.farmmanager.domain.enumeration.TransactionType;
 import com.dev.farmmanager.exception.handler.message.ErrorMessage;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
@@ -34,5 +35,6 @@ public record TransactionPayload(
 
         PaymentMethod paymentMethod,
 
+        @Valid
         List<TransactionItemPayload> items
 ) {}
