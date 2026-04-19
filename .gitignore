@@ -1,4 +1,6 @@
 CLAUDE.md
+claude-plans/
+
 HELP.md
 .gradle
 build/
@@ -40,4 +42,7 @@ out/
 application-local.properties
 
 ### Frontend ###
-frontend/
+frontend/node_modules/
+frontend/dist/
+frontend/.env*.local
+frontend/CLAUDE.MD
