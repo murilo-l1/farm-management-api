@@ -1,0 +1,29 @@
+{
+  "name": "farm-management-frontend",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0",
+    "pinia": "^2.3.1",
+    "primevue": "^4.3.3",
+    "@primevue/themes": "^4.3.3",
+    "primeicons": "^7.0.0",
+    "axios": "^1.7.9"
+  },
+  "devDependencies": {
+    "vite": "^6.3.1",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "typescript": "^5.8.3",
+    "vue-tsc": "^2.2.10",
+    "@vue/tsconfig": "^0.7.0",
+    "@types/node": "^22.14.0",
+    "cross-env": "^7.0.3"
+  }
+}
