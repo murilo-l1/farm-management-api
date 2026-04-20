@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-@Service("UserFetch")
+@Service
 @Validated
 @RequiredArgsConstructor
 public class UserFetchImpl implements UserFetch {

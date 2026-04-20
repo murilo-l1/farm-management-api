@@ -20,8 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Service
 @Transactional(readOnly = true)
-@Service("UserAuth")
 public class UserAuthImpl implements UserAuth {
 
     @Value("${farm.jwt.token.expiration}")

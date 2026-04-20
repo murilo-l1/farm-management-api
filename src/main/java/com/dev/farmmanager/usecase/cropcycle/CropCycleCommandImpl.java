@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@Service("CropCycleCommand")
+@Service
 @RequiredArgsConstructor
 public class CropCycleCommandImpl implements CropCycleCommand {
 

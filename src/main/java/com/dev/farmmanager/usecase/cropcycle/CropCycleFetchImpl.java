@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
-@Service("CropCycleFetch")
+@Service
 @RequiredArgsConstructor
 public class CropCycleFetchImpl implements CropCycleFetch {
 

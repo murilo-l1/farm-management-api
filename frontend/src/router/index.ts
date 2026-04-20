@@ -5,28 +5,34 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      redirect: '/login',
-    },
-    {
       path: '/login',
       name: 'login',
       component: () => import('@/views/LoginView.vue'),
       meta: { requiresGuest: true },
     },
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: () => import('@/views/DashboardView.vue'),
+      path: '/',
+      component: () => import('@/views/AppLayout.vue'),
       meta: { requiresAuth: true },
+      children: [
+        { path: '',           redirect: '/dashboard' },
+        { path: 'dashboard',  name: 'dashboard',  component: () => import('@/views/DashboardView.vue')  },
+        { path: 'safras',     name: 'safras',     component: () => import('@/views/CropCycleView.vue')     },
+        { path: 'financeiro', name: 'financeiro', component: () => import('@/views/TransactionView.vue') },
+        { path: 'inventario', name: 'inventario', component: () => import('@/views/ItemView.vue') },
+        { path: 'categorias', name: 'categorias', component: () => import('@/views/CategoryView.vue') },
+        { path: 'parceiros',  name: 'parceiros',  component: () => import('@/views/StakeholderView.vue')  },
+      ],
     },
   ],
 })
 
 router.beforeEach((to) => {
   const auth = useAuthStore()
-  if (to.meta.requiresAuth && !auth.isAuthenticated) return '/login'
-  if (to.meta.requiresGuest && auth.isAuthenticated) return '/dashboard'
+  const requiresAuth = to.matched.some((r) => r.meta.requiresAuth)
+  const requiresGuest = to.matched.some((r) => r.meta.requiresGuest)
+  if (requiresAuth && !auth.isAuthenticated) return '/login'
+  if (requiresGuest && auth.isAuthenticated) return '/dashboard'
 })
 
 export default router

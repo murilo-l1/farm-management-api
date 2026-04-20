@@ -4,7 +4,7 @@ import { toast } from '@/services/toast'
 
 const http = axios.create({
   baseURL: '/api',
-  withCredentials: true, // necessário para o cookie JWT HttpOnly ser enviado automaticamente
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },

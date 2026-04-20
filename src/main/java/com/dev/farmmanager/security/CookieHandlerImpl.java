@@ -2,9 +2,10 @@ package com.dev.farmmanager.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service("CookieHandler")
+@Component
 public class CookieHandlerImpl implements CookieHandler {
 
     @Value("${farm.jwt.token.expiration}")

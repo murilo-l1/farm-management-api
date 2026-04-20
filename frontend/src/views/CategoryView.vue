@@ -1,6 +1,6 @@
 <template>
   <div class="placeholder">
-    <h1>Dashboard</h1>
+    <h1>Categorias</h1>
     <p>Em construção.</p>
   </div>
 </template>
@@ -11,7 +11,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  min-height: 100vh;
   gap: 0.5rem;
   font-family: 'Inter', sans-serif;
   color: #1a1c1c;

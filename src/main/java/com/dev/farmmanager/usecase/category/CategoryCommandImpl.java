@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@Service("CategoryCommand")
+@Service
 @RequiredArgsConstructor
 public class CategoryCommandImpl implements CategoryCommand {
 

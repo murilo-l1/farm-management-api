@@ -8,13 +8,14 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.PostConstruct;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 
-@Service("JwtHandler")
+@Component
 public class JwtHandlerImpl implements JwtHandler {
 
     @Value("${farm.jwt.token.secret}")

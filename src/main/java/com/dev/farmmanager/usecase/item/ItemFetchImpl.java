@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service("ItemFetch")
+@Service
 @RequiredArgsConstructor
 public class ItemFetchImpl implements ItemFetch {
 

@@ -8,7 +8,7 @@
         <!-- Brand -->
         <div class="brand">
           <div class="brand-icon">
-            <span class="material-symbols-outlined">grain</span>
+            <Sprout :size="36" color="#fff" :stroke-width="1.5" />
           </div>
           <h1 class="brand-name">QuantaPlanta</h1>
           <p class="brand-tagline">Gestão da terra, SIMPLES</p>
@@ -176,6 +176,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { Sprout } from 'lucide-vue-next'
 import AppButton from '@/components/AppButton.vue'
 import AppInput from '@/components/AppInput.vue'
 import AppPassword from '@/components/AppPassword.vue'
@@ -266,7 +267,8 @@ function resetForm() {
 }
 
 .login-page {
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
   background-color: #0a0f0a;
   display: flex;
   flex-direction: column;
@@ -312,22 +314,23 @@ function resetForm() {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 2rem;
+  gap: 1.5rem;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
 }
 @media (min-width: 768px) {
-  .login-card { padding: 3rem; }
+  .login-card { padding: 2.5rem; }
 }
 
 /* ── Brand ──────────────────────────── */
 .brand { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
 
 .brand-icon {
-  width: 5rem; height: 5rem;
+  width: 4rem; height: 4rem;
   border-radius: 1rem;
   background: linear-gradient(135deg, var(--primary), var(--primary-container));
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 20%, transparent);
-  margin-bottom: 0.5rem;
 }
 .brand-icon .material-symbols-outlined {
   font-size: 2.25rem;
