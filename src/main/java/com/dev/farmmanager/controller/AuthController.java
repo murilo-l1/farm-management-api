@@ -36,4 +36,10 @@ public class AuthController extends BaseController {
         return auth.register(payload);
     }
 
+    @Operation(summary = "Resets the cookie with jwt")
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        return auth.logout();
+    }
+
 }

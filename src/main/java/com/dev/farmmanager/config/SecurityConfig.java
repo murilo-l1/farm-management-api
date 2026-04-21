@@ -38,7 +38,8 @@ public class SecurityConfig {
     private String allowedOrigins;
 
     private static final String[] WHITELIST_PATTERNS = {
-            "/api/auth/**"
+            "/api/auth/**",
+            "/api/farm/user/me"
             // endpoints de documentation swagger
     };
 

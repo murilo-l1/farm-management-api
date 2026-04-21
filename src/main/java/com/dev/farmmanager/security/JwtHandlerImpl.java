@@ -55,7 +55,11 @@ public class JwtHandlerImpl implements JwtHandler {
 
     @Override
     public String extractEmail(@NonNull final String token) {
-        return JWT.decode(token).getSubject();
+        try {
+            return this.verifier.verify(token).getSubject();
+        } catch (JWTVerificationException e) {
+            return null;
+        }
     }
 
     @Override

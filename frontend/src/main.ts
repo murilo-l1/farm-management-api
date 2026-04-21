@@ -8,6 +8,7 @@ import 'primeicons/primeicons.css'
 
 import App from './App.vue'
 import router from './router'
+import { useAuthStore } from '@/stores/auth'
 
 const app = createApp(App)
 
@@ -23,5 +24,8 @@ app.use(PrimeVue, {
 })
 app.use(ToastService)
 app.use(ConfirmationService)
+
+const auth = useAuthStore()
+await auth.fetchMe().catch(() => {})
 
 app.mount('#app')

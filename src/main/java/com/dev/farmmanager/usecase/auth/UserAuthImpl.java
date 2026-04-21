@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,6 +71,14 @@ public class UserAuthImpl implements UserAuth {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookieHandler.jwtCookie(token).toString())
+                .build();
+    }
+
+    @Override
+    public ResponseEntity<Void> logout() {
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookieHandler.expiredJwtCookie().toString())
                 .build();
     }
 }

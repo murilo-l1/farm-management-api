@@ -10,6 +10,10 @@ export interface CreateUserPayload {
   phone: string
 }
 
-export interface JwtResponse {
-  expires_in: number
+export interface AuthUser {
+  id: number
+  name: string
+  email: string
+  phone: string
+  active: boolean
 }

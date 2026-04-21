@@ -26,6 +26,7 @@ export const toast = {
   },
   fromApiError(error: unknown) {
     const response = (error as any)?.response
+    console.log(response);
     if (!response) {
       instance?.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível conectar ao servidor.', life: 5000 })
       return

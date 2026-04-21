@@ -1,27 +1,31 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { authService } from '@/services/auth.service'
-import type { CreateUserPayload } from '@/types/auth'
+import type { CreateUserPayload, AuthUser } from '@/types/auth'
 
 export const useAuthStore = defineStore('auth', () => {
 
-  const isAuthenticated = ref(false)
-  const isLoggedIn = computed(() => isAuthenticated.value)
+  const user = ref<AuthUser | null>(null)
+  const isAuthenticated = computed(() => user.value !== null)
+
+  async function fetchMe() {
+    user.value = await authService.me()
+  }
 
   async function login(email: string, password: string) {
     await authService.login({ email, password })
-    isAuthenticated.value = true
+    await fetchMe()
   }
 
   async function register(payload: CreateUserPayload) {
     await authService.register(payload)
-    isAuthenticated.value = true
+    await fetchMe()
   }
 
   async function logout() {
     await authService.logout()
-    isAuthenticated.value = false
+    user.value = null
   }
 
-  return { isAuthenticated, isLoggedIn, login, register, logout }
+  return { user, isAuthenticated, fetchMe, login, register, logout }
 })

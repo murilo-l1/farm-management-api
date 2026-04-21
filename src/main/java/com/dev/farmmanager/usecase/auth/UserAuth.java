@@ -12,4 +12,6 @@ public interface UserAuth {
     ResponseEntity<JwtDto> login(@NonNull @NotNull final EmailLoginPayload payload);
 
     ResponseEntity<Void> register(@NonNull @NotNull final CreateUserPayload payload);
+
+    ResponseEntity<Void> logout();
 }

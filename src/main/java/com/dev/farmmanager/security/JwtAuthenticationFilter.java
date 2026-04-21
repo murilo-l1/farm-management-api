@@ -37,6 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (StringUtils.isNotBlank(email) && !jwtHandler.validateToken(email, jwt)) {
+            filterChain.doFilter(request, response);
             return;
         }
 

@@ -16,6 +16,17 @@ public class CookieHandlerImpl implements CookieHandler {
         return generate("jwt", jwt, expiration);
     }
 
+    @Override
+    public ResponseCookie expiredJwtCookie() {
+        return ResponseCookie.from("jwt", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0)
+                .sameSite("None")
+                .build();
+    }
+
     private ResponseCookie generate(String name, String value, Long expiration){
         return ResponseCookie.from(name, value)
                 .path("/")

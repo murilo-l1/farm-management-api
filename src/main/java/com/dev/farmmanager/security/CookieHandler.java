@@ -7,4 +7,6 @@ public interface CookieHandler {
 
     ResponseCookie jwtCookie (@NotBlank final String jwt);
 
+    ResponseCookie expiredJwtCookie();
+
 }
