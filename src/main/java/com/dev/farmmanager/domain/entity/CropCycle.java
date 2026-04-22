@@ -48,7 +48,9 @@ public class CropCycle extends AbstractEntity {
     @Column(name = "planted_area", precision = 10, scale = 2)
     private BigDecimal plantedArea;
 
-    @Column(name = "measurement_unit", length = 15)
+    @Enumerated(value = EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(name = "measurement_unit", columnDefinition = "measurement_unit")
     private MeasurementUnit measurementUnit;
 
     @Column(name = "plant_count")

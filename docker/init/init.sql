@@ -32,6 +32,13 @@ CREATE TYPE stakeholder_type AS ENUM (
     'BOTH'
     );
 
+CREATE TYPE measurement_unit AS ENUM (
+    'PES',
+    'HECTARE',
+    'METRO_QUADRADO',
+    'ALQUEIRE'
+    );
+
 CREATE TABLE farm_user
 (
     id         int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -88,7 +95,7 @@ CREATE TABLE crop_cycle
     name             text              NOT NULL CHECK (name <> ''),
     crop             varchar(50)       NOT NULL,
     planted_area     numeric(10, 2),
-    measurement_unit varchar(15),
+    measurement_unit measurement_unit,
     plant_count      int,
     planned_budget   numeric(15, 2),
     target_yield     numeric(15, 2),

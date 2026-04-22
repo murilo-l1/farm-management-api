@@ -8,7 +8,8 @@ services:
     env_file:
       - ./.env.local
     volumes:
-      - ./init/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init/init.sql:/docker-entrypoint-initdb.d/01_init.sql
+      - ./init/mock_data.sql:/docker-entrypoint-initdb.d/02_mock_data.sql
       - farm-local-database-volume:/farm/data
     ports:
       - "15435:5432"
