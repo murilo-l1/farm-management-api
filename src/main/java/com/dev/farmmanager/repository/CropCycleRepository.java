@@ -18,7 +18,7 @@ public interface CropCycleRepository extends JpaRepository<CropCycle, Integer> {
 
     @Query("""
             SELECT new com.dev.farmmanager.domain.dto.cropcycle.CropCycleRowDto(
-                c.id, c.name, c.crop, c.plantedArea, c.measurementUnit,
+                c.id, c.name, c.crop, c.plantedArea, c.plantCount, c.measurementUnit,
                 c.status, c.plannedBudget, c.targetYield,
                 ctrl.progressPercentage, ctrl.currentRoi
             )

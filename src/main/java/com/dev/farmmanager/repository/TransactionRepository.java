@@ -38,6 +38,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     @Query("SELECT COALESCE(SUM(t.totalValue), 0) FROM Transaction t WHERE t.userId = :userId AND t.type = :type")
     BigDecimal sumTotalValueByUserIdAndType(@Param("userId") Integer userId, @Param("type") TransactionType type);
 
+    long countByCropCycleId(Integer cropCycleId);
+
     List<Transaction> findByCropCycleIdAndType(Integer cropCycleId, TransactionType type);
 
     @Query("SELECT COALESCE(SUM(t.totalValue), 0) FROM Transaction t WHERE t.cropCycleId = :cropCycleId AND t.type = :type")

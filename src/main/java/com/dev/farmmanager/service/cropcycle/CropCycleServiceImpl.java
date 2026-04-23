@@ -9,12 +9,14 @@ import com.dev.farmmanager.domain.entity.User;
 import com.dev.farmmanager.domain.enumeration.CropCycleStatus;
 import com.dev.farmmanager.domain.enumeration.MeasurementUnit;
 import com.dev.farmmanager.domain.payload.cropcycle.CropCyclePayload;
+import com.dev.farmmanager.exception.handler.CropCycleHasTransactionsException;
 import com.dev.farmmanager.exception.handler.CropCycleNotFoundException;
 import com.dev.farmmanager.exception.handler.InvalidMeasurementUnitPairException;
 import com.dev.farmmanager.exception.handler.UserNotFoundException;
 import com.dev.farmmanager.mapper.CropCycleMapper;
 import com.dev.farmmanager.repository.CropCycleControlRepository;
 import com.dev.farmmanager.repository.CropCycleRepository;
+import com.dev.farmmanager.repository.TransactionRepository;
 import com.dev.farmmanager.security.SecurityUtils;
 import com.dev.farmmanager.service.user.UserService;
 import lombok.NonNull;
@@ -37,6 +39,7 @@ public class CropCycleServiceImpl implements CropCycleService {
 
     private final CropCycleRepository repository;
     private final CropCycleControlRepository controlRepository;
+    private final TransactionRepository transactionRepository;
     private final CropCycleMapper mapper;
     private final UserService userService;
 
@@ -150,6 +153,12 @@ public class CropCycleServiceImpl implements CropCycleService {
     public void delete(Integer id) {
         CropCycle cropCycle = repository.findByIdAndUserId(id, SecurityUtils.getCurrentUserId())
                 .orElseThrow(CropCycleNotFoundException::new);
+
+        long txCount = transactionRepository.countByCropCycleId(id);
+        if (txCount > 0) {
+            throw new CropCycleHasTransactionsException(txCount);
+        }
+
         repository.delete(cropCycle);
     }
 

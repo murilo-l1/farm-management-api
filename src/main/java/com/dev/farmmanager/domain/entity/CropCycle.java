@@ -32,7 +32,7 @@ public class CropCycle extends AbstractEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(mappedBy = "cropCycle")
+    @OneToOne(mappedBy = "cropCycle", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private CropCycleControl control;
 
     @NotBlank

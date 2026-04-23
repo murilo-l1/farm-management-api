@@ -58,4 +58,13 @@ public final class ErrorMessage {
     public static final String INVALID_DOCUMENT_PAIR = "Não é possível informar CPF e CNPJ simultaneamente";
     public static final String INVALID_PHONE_STAKEHOLDER_LENGTH = "O telefone deve ter no máximo 20 caracteres";
 
+    // Dynamic messages
+    public static String cropCycleHasTransactions(long count) {
+        return String.format(
+                "Esta safra possui %d transação(ões) associada(s) e não pode ser excluída. " +
+                "Para encerrar sem perder o histórico financeiro, altere o status para FINALIZADO ou CANCELADO.",
+                count
+        );
+    }
+
 }

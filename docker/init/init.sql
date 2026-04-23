@@ -105,7 +105,8 @@ CREATE TABLE crop_cycle
     created_at       timestamp,
     updated_at       timestamp,
 
-    CONSTRAINT chk_crop_cycle_dates CHECK (end_date IS NULL OR end_date >= start_date)
+    CONSTRAINT chk_crop_cycle_dates CHECK (end_date IS NULL OR end_date >= start_date),
+    CONSTRAINT chk_crop_cycle_measurement_unit_pair CHECK ((measurement_unit = 'PES' AND plant_count IS NOT NULL) OR (measurement_unit <> 'PES' AND plant_count IS NULL))
 );
 
 CREATE TABLE crop_cycle_control

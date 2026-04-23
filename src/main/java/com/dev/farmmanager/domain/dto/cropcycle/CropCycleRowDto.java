@@ -10,6 +10,7 @@ public record CropCycleRowDto(
         String name,
         String crop,
         BigDecimal plantedArea,
+        Integer plantCount,
         MeasurementUnit measurementUnit,
         CropCycleStatus status,
         BigDecimal plannedBudget,
