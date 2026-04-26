@@ -1,6 +1,7 @@
 package com.dev.farmmanager.repository;
 
 import com.dev.farmmanager.domain.entity.Category;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,5 +13,6 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     List<Category> findAllByUserIdOrUserIdIsNull(Integer userId);
 
+    @EntityGraph(attributePaths = "user")
     Optional<Category> getByIdAndUserId(Integer id, Integer userId);
 }

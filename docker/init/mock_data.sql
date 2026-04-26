@@ -30,3 +30,27 @@ VALUES
     (5,  1800.00, 2400.00,  33.33, 88,  85.00, 1, now()),  -- Abobrinha        HARVESTING
     (7,   750.00,    0.00, -53.13, 82,  45.00, 0, now()),  -- Pepino           ACTIVE
     (10, 2200.00, 3520.00,  60.00, 97, 100.00, 0, now());  -- Couve-flor       FINISHED
+
+-- Categorias do usuário teste (id=2)
+-- IDs gerados: 1=Defensivos Agrícolas, 2=Fertilizantes, 3=Sementes, 4=Equipamentos, 5=Embalagens
+INSERT INTO category (user_id, name, created_at, updated_at)
+VALUES
+    (2, 'Defensivos Agrícolas', now(), now()),
+    (2, 'Fertilizantes',        now(), now()),
+    (2, 'Sementes',             now(), now()),
+    (2, 'Equipamentos',         now(), now()),
+    (2, 'Embalagens',           now(), now());
+
+-- Itens do usuário teste (id=2)
+INSERT INTO item (user_id, category_id, name, unity, brand, created_at, updated_at)
+VALUES
+    (2, 1, 'Herbicida Roundup',          'L',   'Monsanto',   now(), now()),
+    (2, 1, 'Fungicida Amistar',          'L',   'Syngenta',   now(), now()),
+    (2, 1, 'Inseticida Decis',           'mL',  'Bayer',      now(), now()),
+    (2, 2, 'Adubo NPK 10-10-10',         'kg',  'Yara',       now(), now()),
+    (2, 2, 'Calcário Dolomítico',        'kg',  'Ibar',       now(), now()),
+    (2, 3, 'Semente Tomate Híbrido',     'un',  'Sakata',     now(), now()),
+    (2, 3, 'Semente Alface Crespa',      'un',  'Feltrin',    now(), now()),
+    (2, 4, 'Mangueira de Irrigação',     'm',   'Tigre',      now(), now()),
+    (2, 5, 'Caixa Plástica Colheita',    'un',  'Rioplas',    now(), now()),
+    (2, NULL, 'Fita de Tutoramento',     'm',   NULL,         now(), now());

@@ -10,6 +10,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class ItemCommandImpl implements ItemCommand {
     private final ItemMapper mapper;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<ItemDto> create(@NonNull final ItemPayload payload) {
         Integer userId = SecurityUtils.getCurrentUserId();
         Item item = service.create(userId, payload);
@@ -27,12 +29,14 @@ public class ItemCommandImpl implements ItemCommand {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<ItemDto> update(@NonNull final Integer id, @NonNull final ItemPayload payload) {
         Item item = service.update(id, payload);
         return ResponseEntity.ok(mapper.toDto(item));
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<Void> delete(@NonNull final Integer id) {
         service.delete(id);
 

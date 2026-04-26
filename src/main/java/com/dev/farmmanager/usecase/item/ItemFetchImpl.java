@@ -8,6 +8,7 @@ import com.dev.farmmanager.service.item.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class ItemFetchImpl implements ItemFetch {
     private final ItemMapper mapper;
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<List<ItemDto>> findAll() {
         List<Item> items = service.findAll();
 
@@ -26,6 +28,7 @@ public class ItemFetchImpl implements ItemFetch {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<ItemDto> getById(Integer id) {
         Item item = service.getById(id).orElseThrow(ItemNotFoundException::new);
 
