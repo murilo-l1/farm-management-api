@@ -6,15 +6,10 @@ import com.dev.farmmanager.domain.enumeration.CropCycleStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public interface CropCycleFetch {
 
-    ResponseEntity<CropCyclePageDto> findAll();
-
-    ResponseEntity<List<CropCycleDto>> findByStatus(CropCycleStatus status);
-
-    ResponseEntity<List<CropCycleDto>> findByDateBetween(LocalDate startDate, LocalDate endDate);
+    ResponseEntity<CropCyclePageDto> findAll(CropCycleStatus status, LocalDate date);
 
     ResponseEntity<CropCycleDto> getById(Integer id);
 }

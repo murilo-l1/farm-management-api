@@ -9,10 +9,7 @@ import com.dev.farmmanager.domain.entity.User;
 import com.dev.farmmanager.domain.enumeration.CropCycleStatus;
 import com.dev.farmmanager.domain.enumeration.MeasurementUnit;
 import com.dev.farmmanager.domain.payload.cropcycle.CropCyclePayload;
-import com.dev.farmmanager.exception.handler.CropCycleHasTransactionsException;
-import com.dev.farmmanager.exception.handler.CropCycleNotFoundException;
-import com.dev.farmmanager.exception.handler.InvalidMeasurementUnitPairException;
-import com.dev.farmmanager.exception.handler.UserNotFoundException;
+import com.dev.farmmanager.exception.handler.*;
 import com.dev.farmmanager.mapper.CropCycleMapper;
 import com.dev.farmmanager.repository.CropCycleControlRepository;
 import com.dev.farmmanager.repository.CropCycleRepository;
@@ -44,9 +41,9 @@ public class CropCycleServiceImpl implements CropCycleService {
     private final UserService userService;
 
     @Override
-    public CropCyclePageDto findAll() {
-        Integer userId = SecurityUtils.getCurrentUserId();
-        List<CropCycleRowDto> rows = repository.findAllRowsByUserId(userId);
+    public CropCyclePageDto findAll(CropCycleStatus status, LocalDate date) {
+
+        final List<CropCycleRowDto> rows = repository.findAllRowsByUserId(SecurityUtils.getCurrentUserId(), status, date);
 
         long activeCyclesCount = rows.stream()
                 .filter(r -> CropCycleStatus.ACTIVE == r.status() || CropCycleStatus.PLANTING == r.status() || CropCycleStatus.HARVESTING == r.status())
@@ -58,8 +55,7 @@ public class CropCycleServiceImpl implements CropCycleService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         OptionalDouble avgProgress = rows.stream()
-                .map(CropCycleRowDto::progressPercentage)
-                .filter(Objects::nonNull)
+                .map(row -> row.progressPercentage() != null ? row.progressPercentage() : BigDecimal.ZERO)
                 .mapToDouble(BigDecimal::doubleValue)
                 .average();
 
@@ -84,16 +80,6 @@ public class CropCycleServiceImpl implements CropCycleService {
     }
 
     @Override
-    public List<CropCycle> findByStatus(CropCycleStatus status) {
-        return repository.findAllByUserIdAndStatus(SecurityUtils.getCurrentUserId(), status);
-    }
-
-    @Override
-    public List<CropCycle> findByDateBetween(LocalDate startDate, LocalDate endDate) {
-        return repository.findAllByUserIdAndStartDateGreaterThanEqualAndEndDateLessThanEqual(SecurityUtils.getCurrentUserId(), startDate, endDate);
-    }
-
-    @Override
     public Optional<CropCycle> getById(Integer id) {
         return repository.findByIdAndUserId(id, SecurityUtils.getCurrentUserId());
     }
@@ -106,6 +92,9 @@ public class CropCycleServiceImpl implements CropCycleService {
         }
         if (payload.measurementUnit() != MeasurementUnit.PES && payload.plantCount() != null) {
             throw new InvalidMeasurementUnitPairException();
+        }
+        if (payload.endDate() != null && payload.endDate().isBefore(payload.startDate())) {
+            throw new StartDateGreaterThanEndDateException();
         }
 
         User user = userService.getById(userId).orElseThrow(UserNotFoundException::new);
@@ -129,6 +118,9 @@ public class CropCycleServiceImpl implements CropCycleService {
         }
         if (payload.measurementUnit() != MeasurementUnit.PES && payload.plantCount() != null) {
             throw new InvalidMeasurementUnitPairException();
+        }
+        if (payload.endDate() != null && payload.endDate().isBefore(payload.startDate())) {
+            throw new StartDateGreaterThanEndDateException();
         }
 
         CropCycle cropCycle = repository.findByIdAndUserId(id, SecurityUtils.getCurrentUserId())

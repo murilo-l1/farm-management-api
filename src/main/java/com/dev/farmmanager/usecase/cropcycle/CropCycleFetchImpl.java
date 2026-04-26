@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,24 +21,14 @@ public class CropCycleFetchImpl implements CropCycleFetch {
     private final CropCycleMapper mapper;
 
     @Override
-    public ResponseEntity<CropCyclePageDto> findAll() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<CropCyclePageDto> findAll(CropCycleStatus status, LocalDate date) {
+        return ResponseEntity.ok(service.findAll(status, date));
     }
 
     @Override
     public ResponseEntity<CropCycleDto> getById(Integer id) {
         CropCycle cropCycle = service.getById(id).orElseThrow(CropCycleNotFoundException::new);
         return ResponseEntity.ok(mapper.toDto(cropCycle));
-    }
-
-    @Override
-    public ResponseEntity<List<CropCycleDto>> findByStatus(CropCycleStatus status) {
-        return ResponseEntity.ok(Collections.emptyList());
-    }
-
-    @Override
-    public ResponseEntity<List<CropCycleDto>> findByDateBetween(LocalDate startDate, LocalDate endDate) {
-        return ResponseEntity.ok(Collections.emptyList());
     }
 
 }

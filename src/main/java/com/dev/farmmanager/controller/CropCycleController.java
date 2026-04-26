@@ -3,6 +3,7 @@ package com.dev.farmmanager.controller;
 import com.dev.farmmanager.controller.base.BaseController;
 import com.dev.farmmanager.domain.dto.cropcycle.CropCycleDto;
 import com.dev.farmmanager.domain.dto.cropcycle.CropCyclePageDto;
+import com.dev.farmmanager.domain.enumeration.CropCycleStatus;
 import com.dev.farmmanager.domain.payload.cropcycle.CropCyclePayload;
 import com.dev.farmmanager.usecase.cropcycle.CropCycleCommand;
 import com.dev.farmmanager.usecase.cropcycle.CropCycleFetch;
@@ -10,9 +11,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping(value = "api/farm/crop-cycle", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -24,8 +28,11 @@ public class CropCycleController extends BaseController {
 
     @GetMapping
     @Operation(summary = "Find all crop cycles with summary stats")
-    public ResponseEntity<CropCyclePageDto> findAll() {
-        return fetch.findAll();
+    public ResponseEntity<CropCyclePageDto> findAll(
+            @RequestParam(required = false) CropCycleStatus status,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        return fetch.findAll(status, date);
     }
 
     @GetMapping("/{id}")
@@ -51,23 +58,5 @@ public class CropCycleController extends BaseController {
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         return command.delete(id);
     }
-
-    // TODO
-    // Isso aqui vai dar um pouco mais de trabalho e vai ser melhor ser tudo do findAll e dai usa Specification.
-    // Pensar se será usado no FE depois...
-//    @GetMapping
-//    @Operation(summary = "Find crop cycles by status")
-//    public ResponseEntity<List<CropCycleDto>> findByStatus(@Valid @RequestParam CropCycleStatus status) {
-//        return fetch.findByStatus(status);
-//    }
-//
-//    @GetMapping
-//    @Operation(summary = "Get crop cycles by date range for authenticated user")
-//    public ResponseEntity<List<CropCycleDto>> findByDateBetween(
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-//        return fetch.findByDateBetween(startDate, endDate);
-//    }
-
 
 }

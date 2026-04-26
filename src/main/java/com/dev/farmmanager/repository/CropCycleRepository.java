@@ -3,8 +3,11 @@ package com.dev.farmmanager.repository;
 import com.dev.farmmanager.domain.dto.cropcycle.CropCycleRowDto;
 import com.dev.farmmanager.domain.entity.CropCycle;
 import com.dev.farmmanager.domain.enumeration.CropCycleStatus;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -14,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CropCycleRepository extends JpaRepository<CropCycle, Integer> {
+public interface CropCycleRepository extends JpaRepository<CropCycle, Integer>, JpaSpecificationExecutor<CropCycle> {
 
     @Query("""
             SELECT new com.dev.farmmanager.domain.dto.cropcycle.CropCycleRowDto(
@@ -24,9 +27,15 @@ public interface CropCycleRepository extends JpaRepository<CropCycle, Integer> {
             )
             FROM CropCycle c LEFT JOIN c.control ctrl
             WHERE c.userId = :userId
-            ORDER BY c.createdAt DESC
+                  AND (CAST(:status AS string) IS NULL OR c.status = :status)
+                  AND (CAST(:date AS date) IS NULL OR c.startDate >= :date)
+            ORDER BY c.updatedAt DESC
             """)
-    List<CropCycleRowDto> findAllRowsByUserId(@Param("userId") Integer userId);
+    List<CropCycleRowDto> findAllRowsByUserId(@Param("userId") Integer userId, @Param("status") CropCycleStatus status, @Param("date") LocalDate date);
+
+    @Override
+    @EntityGraph(attributePaths = "control")
+    List<CropCycle> findAll(Specification<CropCycle> spec, Sort sort);
 
     Optional<CropCycle> findByIdAndUserId(Integer id, Integer userId);
 

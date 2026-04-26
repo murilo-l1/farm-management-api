@@ -11,11 +11,7 @@ import java.util.Optional;
 
 public interface CropCycleService {
 
-    CropCyclePageDto findAll();
-
-    List<CropCycle> findByStatus(CropCycleStatus status);
-
-    List<CropCycle> findByDateBetween(LocalDate startDate, LocalDate endDate);
+    CropCyclePageDto findAll(CropCycleStatus status, LocalDate date);
 
     Optional<CropCycle> getById(Integer id);
 

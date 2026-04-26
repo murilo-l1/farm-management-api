@@ -20,6 +20,7 @@ public final class ErrorMessage {
     public static final String REQUIRED_PHONE = "O telefone é obrigatório";
     public static final String INVALID_PHONE_LENGTH = "O telefone deve ter entre 10 e 11 caracteres";
     public static final String POSITIVE_OR_ZERO = "O valor deve ser maior ou igual à zero";
+    public static final String START_DATE_GREATER_THAN_END_DATE = "A Data de início deve ser anterior à data de fim";
 
     // Category
     public static final String CATEGORY_NOT_FOUND = "Categoria não encontrada";
