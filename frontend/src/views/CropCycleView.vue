@@ -12,7 +12,7 @@
           label="Exportar CSV"
           severity="secondary"
           outlined
-          @click="exportCSV"
+          @click="tableRef.exportCSV()"
         />
         <AppButton
           icon="pi pi-plus"
@@ -24,7 +24,6 @@
 
     <!-- Summary cards -->
     <div class="summary-grid">
-      <!-- Safras Ativas -->
       <div class="summary-card">
         <div class="summary-card__icon summary-card__icon--active">
           <span class="material-symbols-outlined">potted_plant</span>
@@ -36,7 +35,6 @@
         </div>
       </div>
 
-      <!-- Progresso Médio -->
       <div class="summary-card">
         <div class="summary-card__icon summary-card__icon--progress">
           <span class="material-symbols-outlined">trending_up</span>
@@ -48,7 +46,6 @@
         </div>
       </div>
 
-      <!-- ROI Médio -->
       <div class="summary-card">
         <div class="summary-card__icon summary-card__icon--roi">
           <span class="material-symbols-outlined">payments</span>
@@ -89,52 +86,38 @@
       />
     </Drawer>
 
-    <!-- Table card -->
-    <div class="table-card">
-      <DataTable
-        ref="dt"
-        :value="loading ? skeletonRows : cropCycles"
-        paginator
-        :rows="10"
-        :rows-per-page-options="[5, 10, 25, 50]"
-        v-model:filters="filters"
-        :global-filter-fields="['name', 'crop']"
-        v-model:selection="selectedRow"
-        selection-mode="single"
-        :meta-key-selection="false"
-        data-key="id"
-        :row-class="rowClass"
-        class="crop-cycle-table"
-      >
-        <template #header>
-          <div class="table-header">
-            <Select
-                v-model="filterStatus"
-                :options="statusOptions"
-                option-label="label"
-                option-value="value"
-                placeholder="Status"
-                show-clear
-                class="filter-select"
-            />
-            <DatePicker
-                v-model="filterDate"
-                placeholder="Início a partir de"
-                show-button-bar
-                date-format="dd/mm/yy"
-                show-icon
-                icon-display="input"
-                class="filter-datepicker"
-            />
-            <IconField>
-              <InputIcon>
-                <i class="pi pi-search" />
-              </InputIcon>
-              <InputText v-model="filters['global'].value" placeholder="Buscar por safra ou cultura" />
-            </IconField>
-          </div>
-        </template>
-        <!-- Safra -->
+    <!-- Table -->
+    <AppDataTable
+      ref="tableRef"
+      :value="cropCycles"
+      :loading="loading"
+      :global-filter-fields="['name', 'crop']"
+      search-placeholder="Buscar por safra ou cultura"
+      @edit="handleEdit"
+      @delete="handleDelete"
+    >
+      <template #filters>
+        <Select
+          v-model="filterStatus"
+          :options="statusOptions"
+          option-label="label"
+          option-value="value"
+          placeholder="Status"
+          show-clear
+          class="filter-select"
+        />
+        <DatePicker
+          v-model="filterDate"
+          placeholder="Início a partir de"
+          show-button-bar
+          date-format="dd/mm/yy"
+          show-icon
+          icon-display="input"
+          class="filter-datepicker"
+        />
+      </template>
+
+      <template #columns="{ loading }">
         <Column field="name" header="Safra" style="min-width: 12rem">
           <template #body="{ data }">
             <Skeleton v-if="loading" height="1rem" width="9rem" />
@@ -142,7 +125,6 @@
           </template>
         </Column>
 
-        <!-- Cultura -->
         <Column field="crop" header="Cultura" style="min-width: 8rem">
           <template #body="{ data }">
             <Skeleton v-if="loading" height="1rem" width="6rem" />
@@ -150,7 +132,6 @@
           </template>
         </Column>
 
-        <!-- Área -->
         <Column header="Área" style="min-width: 8rem">
           <template #body="{ data }">
             <Skeleton v-if="loading" height="1rem" width="5rem" />
@@ -158,21 +139,15 @@
           </template>
         </Column>
 
-        <!-- Status -->
         <Column field="status" header="Status" style="min-width: 9rem">
           <template #body="{ data }">
             <Skeleton v-if="loading" height="1.5rem" width="7rem" border-radius="2rem" />
-            <span
-              v-else
-              class="status-badge"
-              :style="statusStyle(data.status)"
-            >
+            <span v-else class="status-badge" :style="statusStyle(data.status)">
               {{ statusLabel(data.status) }}
             </span>
           </template>
         </Column>
 
-        <!-- Orçamento -->
         <Column field="planned_budget" header="Orçamento (R$)" style="min-width: 10rem">
           <template #body="{ data }">
             <Skeleton v-if="loading" height="1rem" width="7rem" />
@@ -180,7 +155,6 @@
           </template>
         </Column>
 
-        <!-- Ganho Esperado -->
         <Column field="target_yield" header="Ganho Esperado (R$)" style="min-width: 11rem">
           <template #body="{ data }">
             <Skeleton v-if="loading" height="1rem" width="7rem" />
@@ -188,7 +162,6 @@
           </template>
         </Column>
 
-        <!-- Progresso -->
         <Column field="progress_percentage" header="Progresso" style="min-width: 10rem">
           <template #body="{ data }">
             <Skeleton v-if="loading" height="2.25rem" width="100%" />
@@ -203,58 +176,36 @@
             </div>
           </template>
         </Column>
+      </template>
 
-        <!-- Ações -->
-        <Column header="" style="width: 6rem; text-align: right">
-          <template #body="{ data }">
-            <div v-if="!loading" class="action-cell">
-              <button class="action-btn action-btn--edit" title="Editar" @click.stop="handleEdit(data)">
-                <span class="material-symbols-outlined">edit</span>
-              </button>
-              <button class="action-btn action-btn--delete" title="Excluir" @click.stop="handleDelete(data.id)">
-                <span class="material-symbols-outlined">delete</span>
-              </button>
-            </div>
-          </template>
-        </Column>
-
-        <template #empty>
-          <div class="empty-state">
-            <span class="material-symbols-outlined empty-icon">potted_plant</span>
-            <p>Nenhuma safra encontrada.</p>
-          </div>
-        </template>
-      </DataTable>
-    </div>
+      <template #empty>
+        <div class="empty-state">
+          <span class="material-symbols-outlined empty-icon">potted_plant</span>
+          <p>Nenhuma safra encontrada.</p>
+        </div>
+      </template>
+    </AppDataTable>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue'
-import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Skeleton from 'primevue/skeleton'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
-import InputText from 'primevue/inputtext'
 import Select from 'primevue/select'
 import DatePicker from 'primevue/datepicker'
 import Drawer from 'primevue/drawer'
 import AppButton from '@/components/AppButton.vue'
-import { FilterMatchMode } from '@primevue/core/api'
+import AppDataTable from '@/components/AppDataTable.vue'
 import { cropCycleService } from '@/services/crop-cycle.service'
 import { toast } from '@/services/toast'
 import CropCycleForm from '@/form/CropCycleForm.vue'
 import type { CropCycleDto, CropCycleRow, CropCyclePayload, CropCycleSummary, CropCycleStatus, MeasurementUnit } from '@/types/crop-cycle'
 
-const dt = ref()
+const tableRef = ref()
 const loading = ref(false)
 const cropCycles = ref<CropCycleRow[]>([])
 const summary = ref<CropCycleSummary | null>(null)
-const selectedRow = ref<CropCycleRow | null>(null)
-const selectedForEdit = ref<CropCycleRow | null>(null)
-const skeletonRows = Array(7).fill({})
-const filters = ref({ global: { value: null as string | null, matchMode: FilterMatchMode.CONTAINS } })
 
 const filterStatus = ref<CropCycleStatus | null>(null)
 const filterDate = ref<Date | null>(null)
@@ -289,14 +240,10 @@ const statusConfig: Record<CropCycleStatus, { label: string; color: string; bg: 
   CANCELLED:  { label: 'Cancelado',    color: '#c62828', bg: '#ffebee' },
 }
 
-function statusLabel(status: CropCycleStatus): string {
-  return statusConfig[status]?.label ?? status
-}
-
-function statusStyle(status: CropCycleStatus): Record<string, string> {
-  const cfg = statusConfig[status]
-  if (!cfg) return {}
-  return { color: cfg.color, backgroundColor: cfg.bg }
+function statusLabel(s: CropCycleStatus) { return statusConfig[s]?.label ?? s }
+function statusStyle(s: CropCycleStatus) {
+  const c = statusConfig[s]
+  return c ? { color: c.color, backgroundColor: c.bg } : {}
 }
 
 function formatCurrency(value: number | null): string {
@@ -305,20 +252,13 @@ function formatCurrency(value: number | null): string {
 }
 
 const measurementUnitLabel: Record<MeasurementUnit, string> = {
-  PES:            'pés',
-  HECTARE:        'ha',
-  METRO_QUADRADO: 'm²',
-  ALQUEIRE:       'alqueires',
+  PES: 'pés', HECTARE: 'ha', METRO_QUADRADO: 'm²', ALQUEIRE: 'alqueires',
 }
 
 function formatArea(area: number | null, unit: MeasurementUnit | null): string {
   if (area == null) return '—'
   const label = unit ? measurementUnitLabel[unit] : ''
   return label ? `${area} ${label}` : String(area)
-}
-
-function rowClass(row: CropCycleRow) {
-  return selectedRow.value?.id === row.id ? 'row--selected' : ''
 }
 
 function formatPercent(value: number | null | undefined): string {
@@ -338,22 +278,14 @@ function toIsoDate(d: Date): string {
 async function loadData() {
   loading.value = true
   const page = await cropCycleService
-    .findAll({
-      status: filterStatus.value,
-      date:   filterDate.value ? toIsoDate(filterDate.value) : null,
-    })
+    .findAll({ status: filterStatus.value, date: filterDate.value ? toIsoDate(filterDate.value) : null })
     .finally(() => (loading.value = false))
   summary.value = page.summary
   cropCycles.value = page.cycles
 }
 
 watch([filterStatus, filterDate], loadData)
-
 onMounted(loadData)
-
-function exportCSV() {
-  dt.value.exportCSV()
-}
 
 function handleAdd() {
   drawerMode.value = 'create'
@@ -387,50 +319,9 @@ async function handleSave(payload: CropCyclePayload) {
 async function handleDelete(id: number) {
   await cropCycleService.delete(id)
   cropCycles.value = cropCycles.value.filter((c) => c.id !== id)
-  if (selectedRow.value?.id === id) selectedRow.value = null
   toast.success('Safra excluída.')
 }
 </script>
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
-
-/* Reset PrimeVue DataTable for this view */
-.crop-cycle-table.p-datatable .p-datatable-thead > tr > th {
-  background: #f5f7f5;
-  color: #40493d;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  border-bottom: 1px solid #dde5d8;
-  padding: 0.75rem 1rem;
-}
-
-.crop-cycle-table.p-datatable .p-datatable-tbody > tr > td {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.875rem;
-  color: #1a1c1c;
-  border-bottom: 1px solid #eef1eb;
-  padding: 0.875rem 1rem;
-  vertical-align: middle;
-}
-
-.crop-cycle-table.p-datatable .p-datatable-tbody > tr:hover > td {
-  background: #f5f7f5;
-}
-
-.crop-cycle-table.p-datatable .p-datatable-tbody > tr.row--selected > td {
-  background: #e8f5e9;
-}
-
-.crop-cycle-table.p-datatable .p-datatable-tbody > tr.p-highlight > td {
-  background: #e8f5e9 !important;
-  color: #1a1c1c !important;
-}
-</style>
 
 <style scoped>
 .material-symbols-outlined {
@@ -438,7 +329,6 @@ async function handleDelete(id: number) {
   font-family: 'Material Symbols Outlined';
 }
 
-/* ── Tokens ─────────────────────────── */
 .crop-cycle-view {
   --primary:            #0d631b;
   --primary-container:  #2e7d32;
@@ -448,7 +338,6 @@ async function handleDelete(id: number) {
   --outline-variant:    #bfcaba;
 }
 
-/* ── Shell ──────────────────────────── */
 .crop-cycle-view {
   display: flex;
   flex-direction: column;
@@ -460,7 +349,6 @@ async function handleDelete(id: number) {
   overflow: hidden;
 }
 
-/* ── Header ─────────────────────────── */
 .page-header {
   display: flex;
   align-items: flex-start;
@@ -491,7 +379,6 @@ async function handleDelete(id: number) {
   flex-shrink: 0;
 }
 
-/* ── Summary grid ───────────────────── */
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -519,24 +406,10 @@ async function handleDelete(id: number) {
   flex-shrink: 0;
 }
 
-.summary-card__icon .material-symbols-outlined {
-  font-size: 1.375rem;
-}
-
-.summary-card__icon--active {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-
-.summary-card__icon--progress {
-  background: #e3f2fd;
-  color: #1565c0;
-}
-
-.summary-card__icon--roi {
-  background: #fff3e0;
-  color: #e65100;
-}
+.summary-card__icon .material-symbols-outlined { font-size: 1.375rem; }
+.summary-card__icon--active  { background: #e8f5e9; color: #2e7d32; }
+.summary-card__icon--progress { background: #e3f2fd; color: #1565c0; }
+.summary-card__icon--roi     { background: #fff3e0; color: #e65100; }
 
 .summary-card__body {
   display: flex;
@@ -562,58 +435,13 @@ async function handleDelete(id: number) {
   line-height: 1.1;
 }
 
-.summary-card__value--positive {
-  color: #2e7d32;
-}
+.summary-card__value--positive { color: #2e7d32; }
+.summary-card__value--negative { color: #c62828; }
+.summary-card__skeleton { margin-top: 0.125rem; }
 
-.summary-card__value--negative {
-  color: #c62828;
-}
+.filter-select     { width: 10rem; font-size: 0.875rem; }
+.filter-datepicker { width: 13rem; font-size: 0.875rem; }
 
-.summary-card__skeleton {
-  margin-top: 0.125rem;
-}
-
-/* ── Table card ─────────────────────── */
-.table-card {
-  flex: 1;
-  background: #fff;
-  border: 1px solid var(--outline-variant);
-  border-radius: 1rem;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-:deep(.crop-cycle-table) {
-  height: 100%;
-}
-
-:deep(.crop-cycle-table .p-datatable-wrapper) {
-  flex: 1;
-}
-
-/* ── Table header (search + filters) ── */
-.table-header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.625rem;
-  padding: 0.75rem 1rem;
-}
-
-.filter-select {
-  width: 10rem;
-  font-size: 0.875rem;
-}
-
-.filter-datepicker {
-  width: 13rem;
-  font-size: 0.875rem;
-}
-
-/* ── Status badge ───────────────────── */
 .status-badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
@@ -623,12 +451,7 @@ async function handleDelete(id: number) {
   white-space: nowrap;
 }
 
-/* ── Progress cell ──────────────────── */
-.progress-cell {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
+.progress-cell { display: flex; flex-direction: column; gap: 0.25rem; }
 
 .progress-label {
   font-size: 0.75rem;
@@ -651,59 +474,11 @@ async function handleDelete(id: number) {
   transition: width 0.3s ease;
 }
 
-/* ── Name cell ──────────────────────── */
-.cell-name {
-  font-weight: 600;
-  color: var(--on-surface);
-}
+.cell-name { font-weight: 600; color: var(--on-surface); }
 
-/* ── Action buttons ─────────────────── */
-.action-cell {
-  display: flex;
-  gap: 0.375rem;
-  justify-content: flex-end;
-}
+.drawer-loading { padding: 1.5rem; display: flex; flex-direction: column; }
+.mb-3 { margin-bottom: 1rem; }
 
-.action-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 0.5rem;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  color: var(--on-surface-variant);
-}
-
-.action-btn .material-symbols-outlined {
-  font-size: 1.1rem;
-}
-
-.action-btn--edit:hover {
-  background: #e3f2fd;
-  color: #1565c0;
-}
-
-.action-btn--delete:hover {
-  background: #ffebee;
-  color: #c62828;
-}
-
-/* ── Drawer loading ─────────────────── */
-.drawer-loading {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.mb-3 {
-  margin-bottom: 1rem;
-}
-
-/* ── Empty state ────────────────────── */
 .empty-state {
   display: flex;
   flex-direction: column;
