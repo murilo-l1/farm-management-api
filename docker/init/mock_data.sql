@@ -33,13 +33,13 @@ VALUES
 
 -- Categorias do usuário teste (id=2)
 -- IDs gerados: 1=Defensivos Agrícolas, 2=Fertilizantes, 3=Sementes, 4=Equipamentos, 5=Embalagens
-INSERT INTO category (user_id, name, created_at, updated_at)
+INSERT INTO category (user_id, name, color, created_at, updated_at)
 VALUES
-    (2, 'Defensivos Agrícolas', now(), now()),
-    (2, 'Fertilizantes',        now(), now()),
-    (2, 'Sementes',             now(), now()),
-    (2, 'Equipamentos',         now(), now()),
-    (2, 'Embalagens',           now(), now());
+    (2, 'Defensivos Agrícolas', '#c62828', now(), now()),
+    (2, 'Fertilizantes',        '#1565c0', now(), now()),
+    (2, 'Sementes',             '#2e7d32', now(), now()),
+    (2, 'Equipamentos',         '#e65100', now(), now()),
+    (2, 'Embalagens',           '#6a1b9a', now(), now());
 
 -- Itens do usuário teste (id=2)
 INSERT INTO item (user_id, category_id, name, unity, brand, created_at, updated_at)

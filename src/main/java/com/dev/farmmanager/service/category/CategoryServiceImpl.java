@@ -3,9 +3,11 @@ package com.dev.farmmanager.service.category;
 import com.dev.farmmanager.domain.entity.Category;
 import com.dev.farmmanager.domain.entity.User;
 import com.dev.farmmanager.domain.payload.category.CategoryPayload;
+import com.dev.farmmanager.exception.handler.CategoryHasItemsException;
 import com.dev.farmmanager.exception.handler.CategoryNotFoundException;
 import com.dev.farmmanager.exception.handler.UserNotFoundException;
 import com.dev.farmmanager.repository.CategoryRepository;
+import com.dev.farmmanager.repository.ItemRepository;
 import com.dev.farmmanager.security.SecurityUtils;
 import com.dev.farmmanager.service.user.UserService;
 import lombok.NonNull;
@@ -20,6 +22,7 @@ import java.util.Optional;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository repository;
+    private final ItemRepository itemRepository;
     private final UserService userService;
 
     @Override
@@ -38,6 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = new Category();
         category.setName(payload.name().trim());
+        category.setColor(payload.color());
         category.setUser(user);
 
         return repository.save(category);
@@ -47,11 +51,16 @@ public class CategoryServiceImpl implements CategoryService {
     public Category update(@NonNull final Integer id, @NonNull final CategoryPayload payload) {
         Category category = repository.findById(id).orElseThrow(CategoryNotFoundException::new);
         category.setName(payload.name().trim());
+        category.setColor(payload.color());
         return repository.save(category);
     }
 
     @Override
     public void delete(@NonNull final Integer id) {
+        long itemsWithCategory = itemRepository.countAllByCategoryId(id);
+        if (itemsWithCategory > 0) {
+            throw new CategoryHasItemsException(itemsWithCategory);
+        }
         repository.deleteById(id);
     }
 }

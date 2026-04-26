@@ -56,9 +56,10 @@ VALUES ('admin', '35991179667', 'admin@email.com', '$2a$12$YBOWEel6M/lO2SiPIs5zA
 
 CREATE TABLE category
 (
-    id      integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id integer REFERENCES farm_user (id),
-    name    text NOT NULL CHECK (name <> ''),
+    id         integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id    integer REFERENCES farm_user (id),
+    name       text        NOT NULL CHECK (name <> ''),
+    color      varchar(7)  NULL CHECK (color IS NULL OR color ~ '^#[0-9A-Fa-f]{6}$'),
     created_at timestamp,
     updated_at timestamp
 );

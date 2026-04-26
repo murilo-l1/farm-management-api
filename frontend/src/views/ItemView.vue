@@ -80,7 +80,11 @@
         <Column field="category_name" header="Categoria" style="min-width: 10rem">
           <template #body="{ data }">
             <Skeleton v-if="loading" height="1.5rem" width="7rem" border-radius="2rem" />
-            <span v-else-if="data.category_name" class="category-badge">{{ data.category_name }}</span>
+            <span
+              v-else-if="data.category_name"
+              class="category-badge"
+              :style="categoryBadgeStyle(data.category_id)"
+            >{{ data.category_name }}</span>
             <span v-else class="cell-empty">—</span>
           </template>
         </Column>
@@ -105,12 +109,16 @@ import AppButton from '@/components/AppButton.vue'
 import AppDataTable from '@/components/AppDataTable.vue'
 import ItemForm from '@/form/ItemForm.vue'
 import { itemService } from '@/services/item.service'
+import { categoryService } from '@/services/category.service'
 import { toast } from '@/services/toast'
 import type { ItemDto, ItemPayload } from '@/types/item'
+
+const DEFAULT_CATEGORY_COLOR = '#757575'
 
 const tableRef = ref()
 const loading = ref(false)
 const items = ref<ItemDto[]>([])
+const categoryColorMap = ref<Map<number, string>>(new Map())
 
 const drawerOpen = ref(false)
 const drawerLoading = ref(false)
@@ -124,12 +132,20 @@ const drawerHeader = computed(() =>
     : (editInitialData.value?.name ?? 'Editando Item')
 )
 
+function categoryBadgeStyle(categoryId: number | null) {
+  const color = (categoryId != null ? categoryColorMap.value.get(categoryId) : null) ?? DEFAULT_CATEGORY_COLOR
+  return { backgroundColor: `${color}26`, color }
+}
+
 async function loadData() {
   loading.value = true
   items.value = await itemService.findAll().finally(() => (loading.value = false))
 }
 
-onMounted(loadData)
+onMounted(async () => {
+  const [, cats] = await Promise.all([loadData(), categoryService.findAll()])
+  categoryColorMap.value = new Map(cats.map((c) => [c.id, c.color ?? DEFAULT_CATEGORY_COLOR]))
+})
 
 function handleAdd() {
   drawerMode.value = 'create'
@@ -231,8 +247,6 @@ async function handleDelete(id: number) {
   border-radius: 2rem;
   font-size: 0.75rem;
   font-weight: 600;
-  background: #e8f5e9;
-  color: #2e7d32;
   white-space: nowrap;
 }
 

@@ -24,6 +24,10 @@ public final class ErrorMessage {
 
     // Category
     public static final String CATEGORY_NOT_FOUND = "Categoria não encontrada";
+    public static final String INVALID_COLOR = "A cor deve ser um valor hexadecimal válido";
+    public static String categoryHasItems(long count) {
+        return String.format("Esta categoria possui %d item(ns) e não pode ser excluída. Exclua os itens ou remova sua categoria para continuar.", count);
+    }
 
     // Item
     public static final String ITEM_NOT_FOUND = "Item não encontrado";
@@ -38,6 +42,14 @@ public final class ErrorMessage {
     public static final String REQUIRED_STATUS = "O status é obrigatório";
     public static final String REQUIRED_START_DATE = "A data de início é obrigatória";
     public static final String INVALID_MEASUREMENT_UNIT_PAIR = "Se a unidade é pés, o número de plantas deve ser informado";
+    public static String cropCycleHasTransactions(long count) {
+        return String.format(
+                "Esta safra possui %d transação(ões) associada(s) e não pode ser excluída. " +
+                        "Para encerrar sem perder o histórico financeiro, altere o status para FINALIZADO ou CANCELADO.",
+                count
+        );
+    }
+
 
     // Transaction
     public static final String TRANSACTION_NOT_FOUND = "Transação não encontrada";
@@ -58,14 +70,4 @@ public final class ErrorMessage {
     public static final String INVALID_CNPJ = "CNPJ inválido";
     public static final String INVALID_DOCUMENT_PAIR = "Não é possível informar CPF e CNPJ simultaneamente";
     public static final String INVALID_PHONE_STAKEHOLDER_LENGTH = "O telefone deve ter no máximo 20 caracteres";
-
-    // Dynamic messages
-    public static String cropCycleHasTransactions(long count) {
-        return String.format(
-                "Esta safra possui %d transação(ões) associada(s) e não pode ser excluída. " +
-                "Para encerrar sem perder o histórico financeiro, altere o status para FINALIZADO ou CANCELADO.",
-                count
-        );
-    }
-
 }

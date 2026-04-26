@@ -26,4 +26,7 @@ public class Category extends AbstractEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "color", length = 7)
+    private String color;
+
 }

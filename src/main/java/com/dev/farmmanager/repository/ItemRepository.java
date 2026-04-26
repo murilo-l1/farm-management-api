@@ -17,4 +17,6 @@ public interface ItemRepository extends JpaRepository<Item, Integer>, JpaSpecifi
 
     @EntityGraph(attributePaths = {"category", "category.user"})
     Optional<Item> findByIdAndUserId(Integer id, Integer userId);
+
+    long countAllByCategoryId(Integer categoryId);
 }
