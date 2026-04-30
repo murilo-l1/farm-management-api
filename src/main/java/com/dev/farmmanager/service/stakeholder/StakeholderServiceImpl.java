@@ -1,5 +1,6 @@
 package com.dev.farmmanager.service.stakeholder;
 
+import com.dev.farmmanager.domain.dto.stakeholder.StakeholderOptionDto;
 import com.dev.farmmanager.domain.entity.Stakeholder;
 import com.dev.farmmanager.domain.entity.User;
 import com.dev.farmmanager.domain.payload.stakeholder.StakeholderPayload;
@@ -29,6 +30,11 @@ public class StakeholderServiceImpl implements StakeholderService {
     @Override
     public List<Stakeholder> findAll() {
         return repository.findAllByUserId(SecurityUtils.getCurrentUserId());
+    }
+
+    @Override
+    public List<StakeholderOptionDto> findOptions() {
+        return repository.findOptionsByUserId(SecurityUtils.getCurrentUserId());
     }
 
     @Override

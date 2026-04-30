@@ -1,6 +1,7 @@
 package com.dev.farmmanager.usecase.stakeholder;
 
 import com.dev.farmmanager.domain.dto.stakeholder.StakeholderDto;
+import com.dev.farmmanager.domain.dto.stakeholder.StakeholderOptionDto;
 import com.dev.farmmanager.domain.entity.Stakeholder;
 import com.dev.farmmanager.exception.handler.StakeholderNotFoundException;
 import com.dev.farmmanager.mapper.StakeholderMapper;
@@ -30,5 +31,11 @@ public class StakeholderFetchImpl implements StakeholderFetch {
         Stakeholder stakeholder = service.getById(id).orElseThrow(StakeholderNotFoundException::new);
 
         return ResponseEntity.ok().body(mapper.toDto(stakeholder));
+    }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public ResponseEntity<List<StakeholderOptionDto>> findOptions() {
+        return ResponseEntity.ok(service.findOptions());
     }
 }

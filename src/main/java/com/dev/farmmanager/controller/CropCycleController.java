@@ -2,6 +2,7 @@ package com.dev.farmmanager.controller;
 
 import com.dev.farmmanager.controller.base.BaseController;
 import com.dev.farmmanager.domain.dto.cropcycle.CropCycleDto;
+import com.dev.farmmanager.domain.dto.cropcycle.CropCycleOptionDto;
 import com.dev.farmmanager.domain.dto.cropcycle.CropCyclePageDto;
 import com.dev.farmmanager.domain.enumeration.CropCycleStatus;
 import com.dev.farmmanager.domain.payload.cropcycle.CropCyclePayload;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "api/farm/crop-cycle", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -25,6 +27,12 @@ public class CropCycleController extends BaseController {
 
     private final CropCycleCommand command;
     private final CropCycleFetch fetch;
+
+    @GetMapping("/options")
+    @Operation(summary = "Get crop cycle id/name pairs for dropdowns")
+    public ResponseEntity<List<CropCycleOptionDto>> findOptions() {
+        return fetch.findOptions();
+    }
 
     @GetMapping
     @Operation(summary = "Find all crop cycles with summary stats")

@@ -2,6 +2,7 @@ package com.dev.farmmanager.controller;
 
 import com.dev.farmmanager.controller.base.BaseController;
 import com.dev.farmmanager.domain.dto.stakeholder.StakeholderDto;
+import com.dev.farmmanager.domain.dto.stakeholder.StakeholderOptionDto;
 import com.dev.farmmanager.domain.payload.stakeholder.StakeholderPayload;
 import com.dev.farmmanager.usecase.stakeholder.StakeholderCommand;
 import com.dev.farmmanager.usecase.stakeholder.StakeholderFetch;
@@ -24,6 +25,11 @@ public class StakeholderController extends BaseController {
     @PostMapping
     public ResponseEntity<StakeholderDto> create(@Valid @RequestBody StakeholderPayload payload) {
         return command.create(payload);
+    }
+
+    @GetMapping("/options")
+    public ResponseEntity<List<StakeholderOptionDto>> findOptions() {
+        return fetch.findOptions();
     }
 
     @GetMapping

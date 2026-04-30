@@ -1,5 +1,6 @@
 package com.dev.farmmanager.repository;
 
+import com.dev.farmmanager.domain.dto.cropcycle.CropCycleOptionDto;
 import com.dev.farmmanager.domain.dto.cropcycle.CropCycleRowDto;
 import com.dev.farmmanager.domain.entity.CropCycle;
 import com.dev.farmmanager.domain.enumeration.CropCycleStatus;
@@ -32,6 +33,9 @@ public interface CropCycleRepository extends JpaRepository<CropCycle, Integer>, 
             ORDER BY c.updatedAt DESC
             """)
     List<CropCycleRowDto> findAllRowsByUserId(@Param("userId") Integer userId, @Param("status") CropCycleStatus status, @Param("date") LocalDate date);
+
+    @Query("SELECT new com.dev.farmmanager.domain.dto.cropcycle.CropCycleOptionDto(c.id, c.name) FROM CropCycle c WHERE c.userId = :userId ORDER BY c.name ASC")
+    List<CropCycleOptionDto> findOptionsByUserId(@Param("userId") Integer userId);
 
     @Override
     @EntityGraph(attributePaths = "control")

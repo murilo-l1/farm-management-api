@@ -1,5 +1,6 @@
 package com.dev.farmmanager.service.cropcycle;
 
+import com.dev.farmmanager.domain.dto.cropcycle.CropCycleOptionDto;
 import com.dev.farmmanager.domain.dto.cropcycle.CropCyclePageDto;
 import com.dev.farmmanager.domain.dto.cropcycle.CropCycleRowDto;
 import com.dev.farmmanager.domain.dto.cropcycle.CropCycleSummaryDto;
@@ -77,6 +78,11 @@ public class CropCycleServiceImpl implements CropCycleService {
         );
 
         return new CropCyclePageDto(summary, rows);
+    }
+
+    @Override
+    public List<CropCycleOptionDto> findOptions() {
+        return repository.findOptionsByUserId(SecurityUtils.getCurrentUserId());
     }
 
     @Override

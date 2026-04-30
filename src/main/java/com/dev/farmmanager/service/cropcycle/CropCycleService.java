@@ -1,5 +1,6 @@
 package com.dev.farmmanager.service.cropcycle;
 
+import com.dev.farmmanager.domain.dto.cropcycle.CropCycleOptionDto;
 import com.dev.farmmanager.domain.dto.cropcycle.CropCyclePageDto;
 import com.dev.farmmanager.domain.entity.CropCycle;
 import com.dev.farmmanager.domain.enumeration.CropCycleStatus;
@@ -12,6 +13,8 @@ import java.util.Optional;
 public interface CropCycleService {
 
     CropCyclePageDto findAll(CropCycleStatus status, LocalDate date);
+
+    List<CropCycleOptionDto> findOptions();
 
     Optional<CropCycle> getById(Integer id);
 
