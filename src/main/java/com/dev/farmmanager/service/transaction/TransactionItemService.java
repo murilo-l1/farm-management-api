@@ -13,4 +13,6 @@ public interface TransactionItemService {
     void replaceItems(Transaction transaction, List<TransactionItemPayload> payloads);
 
     List<TransactionItem> findByTransactionId(Integer transactionId);
+
+    List<TransactionItem> findByTransactionIdIn(List<Integer> transactionIds);
 }

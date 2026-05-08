@@ -64,3 +64,8 @@ export interface CropCyclePage {
   summary: CropCycleSummary
   cycles: CropCycleRow[]
 }
+
+export interface CropCycleOption {
+  id: number
+  name: string
+}

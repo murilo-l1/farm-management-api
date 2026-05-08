@@ -13,6 +13,8 @@
       :meta-key-selection="false"
       :data-key="dataKey"
       :row-class="rowClass"
+      :expanded-rows="expandedRows ?? []"
+      @update:expanded-rows="emit('update:expandedRows', $event)"
       class="app-data-table"
     >
       <template #header>
@@ -39,6 +41,10 @@
           </div>
         </template>
       </Column>
+
+      <template v-if="$slots.expansion" #expansion="slotData">
+        <slot name="expansion" v-bind="slotData" />
+      </template>
 
       <template #empty>
         <slot name="empty">
@@ -67,6 +73,8 @@ interface Props {
   dataKey?: string
   globalFilterFields: string[]
   searchPlaceholder?: string
+  rowClassFn?: (row: any) => string
+  expandedRows?: any[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -77,6 +85,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   edit: [row: any]
   delete: [id: any]
+  'update:expandedRows': [rows: any[]]
 }>()
 
 const dt = ref()
@@ -91,7 +100,9 @@ watch(() => props.value, (newValue) => {
 })
 
 function rowClass(row: any) {
-  return selectedRow.value?.[props.dataKey] === row[props.dataKey] ? 'row--selected' : ''
+  const selected = selectedRow.value?.[props.dataKey] === row[props.dataKey] ? 'row--selected' : ''
+  const extra = props.rowClassFn ? props.rowClassFn(row) : ''
+  return [selected, extra].filter(Boolean).join(' ')
 }
 
 function exportCSV() {

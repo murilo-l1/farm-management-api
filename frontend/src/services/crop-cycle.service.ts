@@ -1,5 +1,5 @@
 import http from '@/api/http'
-import type { CropCycleDto, CropCyclePage, CropCyclePayload, CropCycleStatus } from '@/types/crop-cycle'
+import type { CropCycleDto, CropCyclePage, CropCyclePayload, CropCycleStatus, CropCycleOption } from '@/types/crop-cycle'
 
 export interface CropCycleFilters {
   status?: CropCycleStatus | null
@@ -25,4 +25,7 @@ export const cropCycleService = {
 
   delete: (id: number) =>
     http.delete(`/farm/crop-cycle/${id}`),
+
+  findOptions: () =>
+    http.get<CropCycleOption[]>('/farm/crop-cycle/options').then((r) => r.data),
 }

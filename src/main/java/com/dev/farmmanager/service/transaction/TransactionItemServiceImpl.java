@@ -39,7 +39,12 @@ public class TransactionItemServiceImpl implements TransactionItemService {
 
     @Override
     public List<TransactionItem> findByTransactionId(Integer transactionId) {
-        return repository.findAllByTransactionId(transactionId);
+        return repository.findAllByTransactionIdOrderByIdAsc(transactionId);
+    }
+
+    @Override
+    public List<TransactionItem> findByTransactionIdIn(List<Integer> transactionIds) {
+        return repository.findAllByTransactionIdInOrderByIdAsc(transactionIds);
     }
 
     private List<TransactionItem> buildItems(Transaction transaction, List<TransactionItemPayload> payloads) {

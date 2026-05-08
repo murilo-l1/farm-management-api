@@ -1,5 +1,6 @@
 package com.dev.farmmanager.service.transaction;
 
+import com.dev.farmmanager.domain.dto.transaction.TransactionItemDto;
 import com.dev.farmmanager.domain.dto.transaction.TransactionPageDto;
 import com.dev.farmmanager.domain.dto.transaction.TransactionRowDto;
 import com.dev.farmmanager.domain.dto.transaction.TransactionSummaryDto;
@@ -7,11 +8,13 @@ import com.dev.farmmanager.domain.entity.Category;
 import com.dev.farmmanager.domain.entity.CropCycle;
 import com.dev.farmmanager.domain.entity.Stakeholder;
 import com.dev.farmmanager.domain.entity.Transaction;
+import com.dev.farmmanager.domain.entity.TransactionItem;
 import com.dev.farmmanager.domain.entity.User;
 import com.dev.farmmanager.domain.enumeration.TransactionStatus;
 import com.dev.farmmanager.domain.enumeration.TransactionType;
 import com.dev.farmmanager.domain.payload.transaction.TransactionPayload;
 import com.dev.farmmanager.exception.handler.*;
+import com.dev.farmmanager.mapper.TransactionItemMapper;
 import com.dev.farmmanager.repository.TransactionRepository;
 import com.dev.farmmanager.security.SecurityUtils;
 import com.dev.farmmanager.service.category.CategoryService;
@@ -25,10 +28,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +39,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository repository;
     private final TransactionItemService transactionItemService;
+    private final TransactionItemMapper transactionItemMapper;
     private final CropCycleControlService cropCycleControlService;
     private final UserService userService;
     private final CropCycleService cropCycleService;
@@ -44,12 +47,14 @@ public class TransactionServiceImpl implements TransactionService {
     private final StakeholderService stakeholderService;
 
     @Override
-    public TransactionPageDto findAll() {
+    public TransactionPageDto findAll(Integer cropCycleId, TransactionType type, LocalDate date, TransactionStatus status) {
         Integer userId = SecurityUtils.getCurrentUserId();
-        List<TransactionRowDto> rows = repository.findAllRowsByUserId(userId);
+        List<TransactionRowDto> rows = repository.findAllRowsByUserId(userId, cropCycleId, type, date, status);
 
-        BigDecimal totalIncome = repository.sumTotalValueByUserIdAndType(userId, TransactionType.INCOME);
-        BigDecimal totalExpense = repository.sumTotalValueByUserIdAndType(userId, TransactionType.EXPENSE);
+        rows = addItemsToRows(rows);
+
+        BigDecimal totalIncome = repository.sumTotalValueByUserIdAndType(userId, TransactionType.INCOME, date, status, cropCycleId);
+        BigDecimal totalExpense = repository.sumTotalValueByUserIdAndType(userId, TransactionType.EXPENSE, date, status, cropCycleId);
         BigDecimal totalCashFlow = totalIncome.subtract(totalExpense);
 
         TransactionSummaryDto summary = new TransactionSummaryDto(totalCashFlow, totalIncome, totalExpense);
@@ -191,4 +196,29 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setStakeholder(null);
         }
     }
+
+    private List<TransactionRowDto> addItemsToRows(List<TransactionRowDto> rows) {
+        if (rows.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<Integer> ids = rows.stream().map(TransactionRowDto::id).toList();
+        List<TransactionItem> items = transactionItemService.findByTransactionIdIn(ids);
+        if (items.isEmpty()) {
+            return rows;
+        }
+        // Transaction.items era pra funcionar, mas hoje mapper não pega, por isso toda a volta pra fazer a lógica
+        Map<Integer, List<TransactionItemDto>> itemsByTransactionId = items.stream()
+                .collect(Collectors.groupingBy(
+                        TransactionItem::getTransactionId,
+                        Collectors.mapping(transactionItemMapper::toDto, Collectors.toList())
+                ));
+        return rows.stream()
+                .map(row -> new TransactionRowDto(
+                        row.id(), row.transactionDate(), row.description(),
+                        row.cropCycleName(), row.categoryId(), row.categoryName(), row.stakeholderName(),
+                        row.type(), row.status(), row.paymentMethod(), row.totalValue(),
+                        itemsByTransactionId.getOrDefault(row.id(), List.of())
+                )).toList();
+    }
+
 }

@@ -80,7 +80,8 @@ public class Transaction extends AbstractEntity {
     @Column(name = "payment_method", columnDefinition = "payment_method")
     private PaymentMethod paymentMethod;
 
-    @OneToMany(mappedBy = "transaction", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OrderBy("id ASC")
     private List<TransactionItem> items = new ArrayList<>();
 
 }

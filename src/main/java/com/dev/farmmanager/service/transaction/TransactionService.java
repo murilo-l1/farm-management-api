@@ -2,14 +2,17 @@ package com.dev.farmmanager.service.transaction;
 
 import com.dev.farmmanager.domain.dto.transaction.TransactionPageDto;
 import com.dev.farmmanager.domain.entity.Transaction;
+import com.dev.farmmanager.domain.enumeration.TransactionStatus;
+import com.dev.farmmanager.domain.enumeration.TransactionType;
 import com.dev.farmmanager.domain.payload.transaction.TransactionPayload;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface TransactionService {
 
-    TransactionPageDto findAll();
+    TransactionPageDto findAll(Integer cropCycleId, TransactionType type, LocalDate date, TransactionStatus status);
 
     Optional<Transaction> getById(Integer id);
 

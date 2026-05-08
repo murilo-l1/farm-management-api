@@ -15,7 +15,10 @@ import java.util.List;
 public interface TransactionItemRepository extends JpaRepository<TransactionItem, Integer>, JpaSpecificationExecutor<TransactionItem> {
 
     @EntityGraph(attributePaths = {"item"})
-    List<TransactionItem> findAllByTransactionId(Integer transactionId);
+    List<TransactionItem> findAllByTransactionIdOrderByIdAsc(Integer transactionId);
+
+    @EntityGraph(attributePaths = {"item"})
+    List<TransactionItem> findAllByTransactionIdInOrderByIdAsc(List<Integer> transactionIds);
 
     @Modifying
     @Query("DELETE FROM TransactionItem ti WHERE ti.transactionId = :transactionId")

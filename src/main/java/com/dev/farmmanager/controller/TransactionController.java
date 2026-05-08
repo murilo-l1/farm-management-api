@@ -3,6 +3,8 @@ package com.dev.farmmanager.controller;
 import com.dev.farmmanager.controller.base.BaseController;
 import com.dev.farmmanager.domain.dto.transaction.TransactionDto;
 import com.dev.farmmanager.domain.dto.transaction.TransactionPageDto;
+import com.dev.farmmanager.domain.enumeration.TransactionStatus;
+import com.dev.farmmanager.domain.enumeration.TransactionType;
 import com.dev.farmmanager.domain.payload.transaction.TransactionPayload;
 import com.dev.farmmanager.usecase.transaction.TransactionCommand;
 import com.dev.farmmanager.usecase.transaction.TransactionFetch;
@@ -10,9 +12,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping(value = "api/farm/transaction", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -24,8 +29,13 @@ public class TransactionController extends BaseController {
 
     @GetMapping
     @Operation(summary = "Find all transactions with financial summary")
-    public ResponseEntity<TransactionPageDto> findAll() {
-        return fetch.findAll();
+    public ResponseEntity<TransactionPageDto> findAll(
+            @RequestParam(required = false) Integer crop_cycle_id,
+            @RequestParam(required = false) TransactionType type,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false) TransactionStatus status
+    ) {
+        return fetch.findAll(crop_cycle_id, type, date, status);
     }
 
     @GetMapping("/{id}")
