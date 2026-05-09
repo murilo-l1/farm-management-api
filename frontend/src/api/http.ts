@@ -14,8 +14,9 @@ http.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response?.status
+    const url: string = error.config?.url ?? ''
 
-    if (status === 401) {
+    if (status === 401 && !url.startsWith('/auth/')) {
       router.push('/login')
       return Promise.reject(error)
     }

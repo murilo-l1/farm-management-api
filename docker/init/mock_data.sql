@@ -23,16 +23,14 @@ VALUES
 INSERT INTO crop_cycle_control (crop_cycle_id, current_investment, current_revenue, current_roi,
                                  health_score, progress_percentage, alerts_count, last_calculated_at)
 VALUES
-    (1,  2800.00, 4150.00,  48.21, 95, 100.00, 0, now()),  -- Tomate Cereja    FINISHED
-    (2,   650.00, 1080.00,  66.15, 92, 100.00, 0, now()),  -- Alface Crespa    FINISHED
-    (3,   980.00,    0.00, -30.00, 78,  52.00, 1, now()),  -- Cenoura          ACTIVE
-    (4,  1200.00,    0.00, -62.50, 85,  30.00, 0, now()),  -- Pimentão         PLANTING
-    (5,  1800.00, 2400.00,  33.33, 88,  85.00, 1, now()),  -- Abobrinha        HARVESTING
-    (7,   750.00,    0.00, -53.13, 82,  45.00, 0, now()),  -- Pepino           ACTIVE
-    (10, 2200.00, 3520.00,  60.00, 97, 100.00, 0, now());  -- Couve-flor       FINISHED
+    (1,  2800.00, 4150.00,  48.21, 95, 100.00, 0, now()),  
+    (2,   650.00, 1080.00,  66.15, 92, 100.00, 0, now()),  
+    (3,   980.00,    0.00, -30.00, 78,  52.00, 1, now()),  
+    (4,  1200.00,    0.00, -62.50, 85,  30.00, 0, now()),  
+    (5,  1800.00, 2400.00,  33.33, 88,  85.00, 1, now()),  
+    (7,   750.00,    0.00, -53.13, 82,  45.00, 0, now()),  
+    (10, 2200.00, 3520.00,  60.00, 97, 100.00, 0, now());  
 
--- Categorias do usuário teste (id=2)
--- IDs gerados: 1=Defensivos Agrícolas, 2=Fertilizantes, 3=Sementes, 4=Equipamentos, 5=Embalagens
 INSERT INTO category (user_id, name, color, created_at, updated_at)
 VALUES
     (2, 'Defensivos Agrícolas', '#c62828', now(), now()),
@@ -41,7 +39,6 @@ VALUES
     (2, 'Equipamentos',         '#e65100', now(), now()),
     (2, 'Embalagens',           '#6a1b9a', now(), now());
 
--- Itens do usuário teste (id=2)
 INSERT INTO item (user_id, category_id, name, unity, brand, created_at, updated_at)
 VALUES
     (2, 1, 'Herbicida Roundup',          'L',   'Monsanto',   now(), now()),
@@ -55,91 +52,76 @@ VALUES
     (2, 5, 'Caixa Plástica Colheita',    'un',  'Rioplas',    now(), now()),
     (2, NULL, 'Fita de Tutoramento',     'm',   NULL,         now(), now());
 
--- Parceiros do usuário teste (id=2)
--- IDs gerados: 1=AgroDistribuidora, 2=Cooperativa Central, 3=Sakata Sementes
 INSERT INTO stakeholder (user_id, name, cnpj, cpf, type, phone, created_at, updated_at)
 VALUES
-    (2, 'AgroDistribuidora Minas',         '12.345.678/0001-90', NULL, 'SUPPLIER', '31991110001', now(), now()),
-    (2, 'Cooperativa Agropecuária Central','98.765.432/0001-10', NULL, 'BUYER',    '31992220002', now(), now()),
-    (2, 'Sakata Sementes Brasil',          '45.678.901/0001-23', NULL, 'SUPPLIER', '11993330003', now(), now());
+    (2, 'AgroDistribuidora Minas',         '12345678000190', NULL, 'SUPPLIER', '31991110001', now(), now()),
+    (2, 'Cooperativa Agropecuária Central','98765432000110', NULL, 'BUYER',    '31992220002', now(), now()),
+    (2, 'Sakata Sementes Brasil',          '45678901000123', NULL, 'SUPPLIER', '11993330003', now(), now());
 
--- Transações do usuário teste (id=2) — 20 registros
--- Safras:      1=Tomate Cereja, 2=Alface Crespa, 3=Cenoura, 4=Pimentão,
---              5=Abobrinha, 6=Brócolis, 7=Pepino, 9=Rúcula, 10=Couve-flor
--- Categorias:  1=Defensivos, 2=Fertilizantes, 3=Sementes, 4=Equipamentos, 5=Embalagens
--- Stakeholders:1=AgroDistribuidora (fornecedor), 2=Cooperativa (comprador), 3=Sakata (sementes)
---
--- IDs gerados sequencialmente: 1-10 sem itens, 11-20 com itens
 INSERT INTO transaction (user_id, crop_cycle_id, stakeholder_id, category_id,
                          type, description, total_value, transaction_date,
                          status, payment_method, created_at, updated_at)
 VALUES
-    -- ── SEM ITENS ─────────────────────────────────────────────────────────────────
-    -- Safra 1 – Tomate Cereja (2024-02-15 → 2024-07-10)
-    (2,  1, NULL, 4,    'EXPENSE', 'Aluguel bomba de irrigação',           450.00, '2024-04-15', 'FINISHED', 'PIX',    now(), now()),  -- 1
-    (2,  1, NULL, NULL, 'EXPENSE', 'Mão de obra – colheita tomate',        800.00, '2024-06-20', 'FINISHED', 'CASH',   now(), now()),  -- 2
-    (2,  1, 2,    NULL, 'INCOME',  'Venda Tomate Cereja – lote 1',        2200.00, '2024-06-25', 'FINISHED', 'PIX',    now(), now()),  -- 3
-    (2,  1, 2,    NULL, 'INCOME',  'Venda Tomate Cereja – lote 2',        1950.00, '2024-07-05', 'FINISHED', 'PIX',    now(), now()),  -- 4
-    -- Safra 2 – Alface Crespa (2023-11-01 → 2024-01-20)
-    (2,  2, NULL, NULL, 'EXPENSE', 'Mão de obra – colheita alface',        320.00, '2024-01-10', 'FINISHED', 'CASH',   now(), now()),  -- 5
-    (2,  2, 2,    NULL, 'INCOME',  'Venda Alface Crespa – entrega total', 1080.00, '2024-01-18', 'FINISHED', 'BOLETO', now(), now()),  -- 6
-    -- Safra 3 – Cenoura (2024-05-10 → 2024-10-15)
-    (2,  3, 1,    NULL, 'EXPENSE', 'Frete entrega insumos – cenoura',      180.00, '2024-05-12', 'FINISHED', 'PIX',    now(), now()),  -- 7
-    -- Safra 5 – Abobrinha (2024-06-01 → 2024-09-30)
-    (2,  5, 2,    NULL, 'INCOME',  'Venda Abobrinha Caipira – lote 1',   1400.00, '2024-09-10', 'FINISHED', 'PIX',    now(), now()),  -- 8
-    -- Safra 7 – Pepino (2024-07-15 → 2024-11-30)
-    (2,  7, NULL, NULL, 'EXPENSE', 'Energia elétrica – bomba irrigação',   230.00, '2024-09-15', 'PENDING',  'BOLETO', now(), now()),  -- 9
-    -- Safra 10 – Couve-flor (2024-03-01 → 2024-07-20)
-    (2, 10, 2,    NULL, 'INCOME',  'Venda Couve-flor Verônica',           3520.00, '2024-07-15', 'FINISHED', 'PIX',    now(), now()),  -- 10
+    (2,  1, NULL, 4,    'EXPENSE', 'Aluguel bomba de irrigação',           450.00, '2024-04-15', 'FINISHED', 'PIX',    now(), now()),  
+    (2,  1, NULL, NULL, 'EXPENSE', 'Mão de obra – colheita tomate',        800.00, '2024-06-20', 'FINISHED', 'CASH',   now(), now()),  
+    (2,  1, 2,    NULL, 'INCOME',  'Venda Tomate Cereja – lote 1',        2200.00, '2024-06-25', 'FINISHED', 'PIX',    now(), now()),  
+    (2,  1, 2,    NULL, 'INCOME',  'Venda Tomate Cereja – lote 2',        1950.00, '2024-07-05', 'FINISHED', 'PIX',    now(), now()),  
+    
+    (2,  2, NULL, NULL, 'EXPENSE', 'Mão de obra – colheita alface',        320.00, '2024-01-10', 'FINISHED', 'CASH',   now(), now()),  
+    (2,  2, 2,    NULL, 'INCOME',  'Venda Alface Crespa – entrega total', 1080.00, '2024-01-18', 'FINISHED', 'BOLETO', now(), now()),  
+    
+    (2,  3, 1,    NULL, 'EXPENSE', 'Frete entrega insumos – cenoura',      180.00, '2024-05-12', 'FINISHED', 'PIX',    now(), now()),  
+    
+    (2,  5, 2,    NULL, 'INCOME',  'Venda Abobrinha Caipira – lote 1',   1400.00, '2024-09-10', 'FINISHED', 'PIX',    now(), now()),  
+    
+    (2,  7, NULL, NULL, 'EXPENSE', 'Energia elétrica – bomba irrigação',   230.00, '2024-09-15', 'PENDING',  'BOLETO', now(), now()),  
+    
+    (2, 10, 2,    NULL, 'INCOME',  'Venda Couve-flor Verônica',           3520.00, '2024-07-15', 'FINISHED', 'PIX',    now(), now()),  
 
-    -- ── COM ITENS ─────────────────────────────────────────────────────────────────
-    -- Safra 1 – Tomate Cereja
-    (2,  1, 1, 1, 'EXPENSE', 'Compra defensivos – Tomate Cereja',          290.00, '2024-03-20', 'FINISHED', 'BOLETO', now(), now()),  -- 11
-    (2,  1, 3, 3, 'EXPENSE', 'Sementes Tomate Híbrido – plantio inicial',  425.00, '2024-02-16', 'FINISHED', 'PIX',    now(), now()),  -- 12
-    -- Safra 2 – Alface Crespa
-    (2,  2, 3, 3, 'EXPENSE', 'Sementes Alface Crespa – plantio',           240.00, '2023-11-03', 'FINISHED', 'CARD',   now(), now()),  -- 13
-    -- Safra 3 – Cenoura
-    (2,  3, 1, 2, 'EXPENSE', 'Fertilização inicial – Cenoura Nantes',      330.00, '2024-05-15', 'FINISHED', 'PIX',    now(), now()),  -- 14
-    -- Safra 4 – Pimentão
-    (2,  4, 1, 1, 'EXPENSE', 'Defensivos fitossanitários – Pimentão',      465.00, '2024-08-10', 'PENDING',  'BOLETO', now(), now()),  -- 15
-    -- Safra 5 – Abobrinha
-    (2,  5, 1, 2, 'EXPENSE', 'Adubação de cobertura – Abobrinha',          144.00, '2024-06-05', 'FINISHED', 'PIX',    now(), now()),  -- 16
-    -- Safra 7 – Pepino
-    (2,  7, 1, NULL,'EXPENSE','Estrutura tutoramento e irrigação – Pepino', 575.00, '2024-07-18', 'PENDING',  'PIX',    now(), now()),  -- 17
-    -- Safra 10 – Couve-flor
-    (2, 10, 1, 5, 'EXPENSE', 'Embalagens para colheita – Couve-flor',      960.00, '2024-07-01', 'FINISHED', 'PIX',    now(), now()),  -- 18
-    -- Safra 6 – Brócolis
-    (2,  6, 1, 1, 'EXPENSE', 'Defensivos e fertilização base – Brócolis',  277.00, '2024-10-05', 'PENDING',  'BOLETO', now(), now()),  -- 19
-    -- Safra 9 – Rúcula
-    (2,  9, 1, 2, 'EXPENSE', 'Correção de solo – Rúcula Primavera',        141.00, '2024-09-16', 'PENDING',  'PIX',    now(), now());  -- 20
+    (2,  1, 1, 1, 'EXPENSE', 'Compra defensivos – Tomate Cereja',          290.00, '2024-03-20', 'FINISHED', 'BOLETO', now(), now()), 
+    (2,  1, 3, 3, 'EXPENSE', 'Sementes Tomate Híbrido – plantio inicial',  425.00, '2024-02-16', 'FINISHED', 'PIX',    now(), now()),  
 
--- Itens das 10 transações com detalhamento (ids 11-20)
--- Totais conferidos: qty × unit_price = total_price; soma = total_value da transação
+    (2,  2, 3, 3, 'EXPENSE', 'Sementes Alface Crespa – plantio',           240.00, '2023-11-03', 'FINISHED', 'CARD',   now(), now()),  
+    
+    (2,  3, 1, 2, 'EXPENSE', 'Fertilização inicial – Cenoura Nantes',      330.00, '2024-05-15', 'FINISHED', 'PIX',    now(), now()),  
+    
+    (2,  4, 1, 1, 'EXPENSE', 'Defensivos fitossanitários – Pimentão',      465.00, '2024-08-10', 'PENDING',  'BOLETO', now(), now()),  
+    
+    (2,  5, 1, 2, 'EXPENSE', 'Adubação de cobertura – Abobrinha',          144.00, '2024-06-05', 'FINISHED', 'PIX',    now(), now()),  
+    
+    (2,  7, 1, NULL,'EXPENSE','Estrutura tutoramento e irrigação – Pepino', 575.00, '2024-07-18', 'PENDING',  'PIX',    now(), now()),  
+    
+    (2, 10, 1, 5, 'EXPENSE', 'Embalagens para colheita – Couve-flor',      960.00, '2024-07-01', 'FINISHED', 'PIX',    now(), now()),  
+    
+    (2,  6, 1, 1, 'EXPENSE', 'Defensivos e fertilização base – Brócolis',  277.00, '2024-10-05', 'PENDING',  'BOLETO', now(), now()),  
+    
+    (2,  9, 1, 2, 'EXPENSE', 'Correção de solo – Rúcula Primavera',        141.00, '2024-09-16', 'PENDING',  'PIX',    now(), now());  
+
 INSERT INTO transaction_item (transaction_id, item_id, quantity, unit_price, total_price)
 VALUES
-    -- tx 11 – Defensivos Tomate Cereja | total: 290,00
-    (11, 1,   2.00,  85.00,  170.00),   -- Herbicida Roundup  2 L
-    (11, 2,   1.00, 120.00,  120.00),   -- Fungicida Amistar  1 L
-    -- tx 12 – Sementes Tomate | total: 425,00
-    (12, 6, 500.00,   0.85,  425.00),   -- Semente Tomate Híbrido  500 un
-    -- tx 13 – Sementes Alface | total: 240,00
-    (13, 7, 800.00,   0.30,  240.00),   -- Semente Alface Crespa  800 un
-    -- tx 14 – Fertilização Cenoura | total: 330,00
-    (14, 4,  50.00,   4.80,  240.00),   -- Adubo NPK 10-10-10  50 kg
-    (14, 5, 100.00,   0.90,   90.00),   -- Calcário Dolomítico 100 kg
-    -- tx 15 – Defensivos Pimentão | total: 465,00
-    (15, 3, 500.00,   0.45,  225.00),   -- Inseticida Decis  500 mL
-    (15, 2,   2.00, 120.00,  240.00),   -- Fungicida Amistar   2 L
-    -- tx 16 – Adubação Abobrinha | total: 144,00
-    (16, 4,  30.00,   4.80,  144.00),   -- Adubo NPK 10-10-10  30 kg
-    -- tx 17 – Tutoramento e irrigação Pepino | total: 575,00
-    (17, 10, 200.00,  0.75,  150.00),   -- Fita de Tutoramento  200 m
-    (17,  8,  50.00,  8.50,  425.00),   -- Mangueira de Irrigação  50 m
-    -- tx 18 – Embalagens Couve-flor | total: 960,00
-    (18,  9,  80.00, 12.00,  960.00),   -- Caixa Plástica Colheita  80 un
-    -- tx 19 – Defensivos e adubação Brócolis | total: 277,00
-    (19,  1,   1.00, 85.00,   85.00),   -- Herbicida Roundup   1 L
-    (19,  4,  40.00,  4.80,  192.00),   -- Adubo NPK 10-10-10 40 kg
-    -- tx 20 – Correção de solo Rúcula | total: 141,00
-    (20,  5,  50.00,  0.90,   45.00),   -- Calcário Dolomítico 50 kg
-    (20,  4,  20.00,  4.80,   96.00);   -- Adubo NPK 10-10-10 20 kg
+    
+    (11, 1,   2.00,  85.00,  170.00),   
+    (11, 2,   1.00, 120.00,  120.00),   
+    
+    (12, 6, 500.00,   0.85,  425.00),   
+    
+    (13, 7, 800.00,   0.30,  240.00),   
+   
+    (14, 4,  50.00,   4.80,  240.00),   
+    (14, 5, 100.00,   0.90,   90.00),   
+    
+    (15, 3, 500.00,   0.45,  225.00),   
+    (15, 2,   2.00, 120.00,  240.00),   
+   
+    (16, 4,  30.00,   4.80,  144.00),   
+   
+    (17, 10, 200.00,  0.75,  150.00),   
+    (17,  8,  50.00,  8.50,  425.00),   
+   
+    (18,  9,  80.00, 12.00,  960.00),   
+    
+    (19,  1,   1.00, 85.00,   85.00),   
+    (19,  4,  40.00,  4.80,  192.00),   
+    
+    (20,  5,  50.00,  0.90,   45.00),   
+    (20,  4,  20.00,  4.80,   96.00);   

@@ -50,7 +50,7 @@ public class CropCycleControlServiceImpl implements CropCycleControlService {
     }
 
     private BigDecimal calculateRoi(BigDecimal investment, BigDecimal revenue) {
-        if (investment.compareTo(BigDecimal.ZERO) > 0) {
+        if (investment.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }
         return revenue.subtract(investment)
